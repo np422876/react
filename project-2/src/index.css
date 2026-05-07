@@ -1,0 +1,9 @@
+*{
+  font-family: 'Times New Roman', Times, serif;
+  font-size: medium;
+  display: flex;
+  background-color: aquamarine;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}

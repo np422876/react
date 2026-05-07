@@ -1,0 +1,10 @@
+.user{
+    background-color: rgb(208, 124, 14);
+    font-family: 'Times New Roman', Times, serif;
+    font-size: medium;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+
+}
