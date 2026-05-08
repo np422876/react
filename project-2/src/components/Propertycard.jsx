@@ -1,6 +1,8 @@
 import React from "react";
 import img from "../assets/apartment.png";
 import "./Propertycard.css";
+import Save from "./Save";
+import "./Save.css";
 
 
 const Propertycard = ({ title, price, location, beds, baths, image }) => {
@@ -12,6 +14,7 @@ const Propertycard = ({ title, price, location, beds, baths, image }) => {
       <p>{location}</p>
       <p>{beds} Bedrooms </p>
       <p>  {baths} Bathrooms</p>
+      <Save />
     </div>
   );
 };
