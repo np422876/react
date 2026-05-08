@@ -1,18 +1,19 @@
 import React from "react";
-import PropertyCard from "./Propertycard.css";
+import img from "../assets/apartment.png";
+import "./Propertycard.css";
 
 
-const PropertyCard = ({ title, price, location, beds, baths, image }) => {
+const Propertycard = ({ title, price, location, beds, baths, image }) => {
   return (
     <div className="container">
-      <img src={image} alt={title} />
+      <img src={img} alt={title} />
       <h2>{title}</h2>
       <p>{price}</p>
       <p>{location}</p>
-      <p>{beds} </p>
-      <p>  {baths} Baths</p>
+      <p>{beds} Bedrooms </p>
+      <p>  {baths} Bathrooms</p>
     </div>
   );
 };
 
-export default PropertyCard;
+export default Propertycard;

@@ -1,10 +1,16 @@
 .user{
-    background-color: rgb(208, 124, 14);
-    font-family: 'Times New Roman', Times, serif;
-    font-size: medium;
     display: flex;
-    flex-wrap: wrap;
+    align-items: flex-start;
     justify-content: center;
-    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    
+}
 
+img{
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
 }
