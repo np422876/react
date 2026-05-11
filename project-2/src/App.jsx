@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import Propertycard from "./components/Propertycard";
 import img from "./assets/apartment.png";
+import img2 from "./assets/realestate-removebg-preview.png";
 import "./App.css"; 
 import Save from "./components/Save";
 import "./components/Save.css";
@@ -12,9 +13,14 @@ function App() {
     console.log(e.target.value);
   };
   return (
-    <div className='user'>
-      <Navbar/>
-      <input type="text" placeholder='Search properties...' onChange={handleSearch} className='searchbox'/>
+    <div>
+
+      <div className='navbar'>
+      <Navbar />
+      <input type="text" placeholder='Search properties...' className='searchbox' onChange={handleSearch} />
+      </div>
+
+      <div className='user'>
       <Propertycard 
         title="Luxury Apartment"
         price="75,00,00"
@@ -42,6 +48,7 @@ function App() {
         image={img}
         Save={<Save />}
       />
+    </div>
     </div>
   )
 }
