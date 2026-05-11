@@ -15,3 +15,7 @@ img{
     object-fit: cover;
 }
 
+.searchbox{
+    display: flex;
+    margin-left: auto;
+}

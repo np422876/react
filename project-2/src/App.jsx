@@ -14,7 +14,7 @@ function App() {
   return (
     <div className='user'>
       <Navbar/>
-      <input type="text" placeholder='Search properties...' onChange={handleSearch} className='search-input'/>
+      <input type="text" placeholder='Search properties...' onChange={handleSearch} className='searchbox'/>
       <Propertycard 
         title="Luxury Apartment"
         price="75,00,00"
