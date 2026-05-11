@@ -4,10 +4,17 @@ import img from "./assets/apartment.png";
 import "./App.css"; 
 import Save from "./components/Save";
 import "./components/Save.css";
+import Navbar from "./components/Navbar";
+import "./components/Navbar.css";
 
 function App() {
- return (
+  const handleSearch = (e) => {
+    console.log(e.target.value);
+  };
+  return (
     <div className='user'>
+      <Navbar/>
+      <input type="text" placeholder='Search properties...' onChange={handleSearch} className='search-input'/>
       <Propertycard 
         title="Luxury Apartment"
         price="75,00,00"
