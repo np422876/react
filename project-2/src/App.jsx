@@ -8,18 +8,32 @@ import "./components/Save.css";
 import Navbar from "./components/Navbar";
 import "./components/Navbar.css";
 import Properties from "./components/Properties.js";
+import { useEffect } from 'react';
 
 function App() {
   const handleSearch = (e) => {
     console.log(e.target.value);
   };
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
+
   return (
     <div>
-
-      <div className='navbar'>
-      <Navbar />
-      <input type="text" placeholder='Search properties...' className='searchbox' onChange={handleSearch} />
-      </div>
+      {loading ? (
+        <h1 className="loading">Loading...</h1>
+      ) : (
+        <div className='navbar'>
+          <Navbar />
+          <input type="text" placeholder='Search properties...' className='searchbox' onChange={handleSearch} />
+        </div>
+      )}
 
       <div className='user'>
       {Properties.map((property) => (
@@ -34,7 +48,7 @@ function App() {
         />
       ))}
       </div>
-    </div>
+      </div>
   )
 }
 

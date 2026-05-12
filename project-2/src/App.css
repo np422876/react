@@ -23,3 +23,9 @@ img{
     border-radius: 10px;
     border: 2px solid #000000;
 }
+
+.loading{
+    text-align: center;
+    font-size: 32px;
+    margin-top: 50px;
+}
