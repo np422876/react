@@ -13,7 +13,7 @@ const Propertycard = ({ title, price, location, beds, baths, image }) => {
       <p>{price}</p>
       <p>{location}</p>
       <p>{beds} Bedrooms </p>
-      <p>  {baths} Bathrooms</p>
+      <p>{baths} Bathrooms</p>
       <Save />
     </div>
   );

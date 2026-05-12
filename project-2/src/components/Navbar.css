@@ -1,5 +1,6 @@
 .navbar{
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
@@ -17,6 +18,7 @@
     color: #c35454;
 }
 .logo{
-    height: 50px;
-    width: 50px;
+    margin: auto;
+    height: 40px;
+    width: 40px;
 }
