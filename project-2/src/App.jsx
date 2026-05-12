@@ -27,13 +27,14 @@ function App() {
   return (
     <div>
       {loading ? (
-        <h1 className="loading">Loading...</h1>
+        <div className="loading">
+  <div className="spinner"></div>
+</div>
       ) : (
         <div className='navbar'>
           <Navbar />
           <input type="text" placeholder='Search properties...' className='searchbox' onChange={handleSearch} />
-        </div>
-      )}
+      
 
       <div className='user'>
       {Properties.map((property) => (
@@ -48,6 +49,8 @@ function App() {
         />
       ))}
       </div>
+      </div>
+      )}
       </div>
   )
 }
