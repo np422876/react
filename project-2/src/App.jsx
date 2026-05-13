@@ -11,17 +11,42 @@ import Properties from "./components/Properties.js";
 import { useEffect } from 'react';
 
 function App() {
+
   const handleSearch = (e) => {
     console.log(e.target.value);
   };
 
+  const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
 
     setTimeout(() => {
-      setLoading(false);
+
+      fetch("https://6a0417582afe8349b4b5d8e5.mockapi.io/api/properties")
+
+        .then((response) => {
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch properties");
+          }
+
+          return response.json();
+        })
+
+        .then((data) => {
+          setProperties(data);
+          setLoading(false);
+        })
+
+        .catch((err) => {
+          setError(err.message);
+          setLoading(false);
+        });
+
     }, 1000);
+
   }, []);
 
   return (
@@ -37,7 +62,7 @@ function App() {
       
 
       <div className='user'>
-      {Properties.map((property) => (
+      {properties.map((property) => (
         <Propertycard
           key={property.id}
           title={property.title}
@@ -45,7 +70,7 @@ function App() {
           location={property.location}
           beds={property.bedrooms}
           baths={property.bathrooms}
-          image={property.Image}
+          image={property.image}
         />
       ))}
       </div>
