@@ -1,24 +1,26 @@
-import React, {useState} from 'react'
-import Propertycard from "./components/Propertycard";
-import img from "./assets/apartment.png";
-import img2 from "./assets/realestate-removebg-preview.png";
-import "./App.css"; 
-import Save from "./components/Save";
-import "./components/Save.css";
-import Navbar from "./components/Navbar";
-import "./components/Navbar.css";
-import Properties from "./components/Properties.js";
-import { useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+
+import Home from './pages/Home'
+import Properties from './pages/Properties'
+import About from './pages/About'
+
+import Navbar from './components/Navbar'
+import Propertycard from './components/Propertycard'
+
+import "./App.css"
+import "./components/Navbar.css"
+import "./components/Save.css"
 
 function App() {
 
   const handleSearch = (e) => {
-    console.log(e.target.value);
-  };
+    console.log(e.target.value)
+  }
 
-  const [properties, setProperties] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [properties, setProperties] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
 
   useEffect(() => {
 
@@ -29,54 +31,74 @@ function App() {
         .then((response) => {
 
           if (!response.ok) {
-            throw new Error("Failed to fetch properties");
+            throw new Error("Failed to fetch properties")
           }
 
-          return response.json();
+          return response.json()
         })
 
         .then((data) => {
-          setProperties(data);
-          setLoading(false);
+          setProperties(data)
+          setLoading(false)
         })
 
         .catch((err) => {
-          setError(err.message);
-          setLoading(false);
-        });
+          setError(err.message)
+          setLoading(false)
+        })
 
-    }, 1000);
+    }, 1000)
 
-  }, []);
+  }, [])
 
   return (
-    <div>
-      {loading ? (
-        <div className="loading">
-  <div className="spinner"></div>
-</div>
-      ) : (
-        <div className='navbar'>
-          <Navbar />
-          <input type="text" placeholder='Search properties...' className='searchbox' onChange={handleSearch} />
-      
+    <BrowserRouter>
 
-      <div className='user'>
-      {properties.map((property) => (
-        <Propertycard
-          key={property.id}
-          title={property.title}
-          price={property.price}
-          location={property.location}
-          beds={property.bedrooms}
-          baths={property.bathrooms}
-          image={property.image}
+      <Navbar />
+
+      <input
+        type="text"
+        placeholder="Search properties..."
+        className="searchbox"
+        onChange={handleSearch}
+      />
+
+      <Routes>
+
+        <Route
+          path="/"
+          element={
+            loading ? (
+              <div className="loading">
+                <div className="spinner"></div>
+              </div>
+            ) : error ? (
+              <h2>{error}</h2>
+            ) : (
+              <div className="user">
+                {properties.map((property) => (
+                  <Propertycard
+                    key={property.id}
+                    title={property.title}
+                    price={property.price}
+                    location={property.location}
+                    beds={property.bedrooms}
+                    baths={property.bathrooms}
+                    image={property.image}
+                  />
+                ))}
+              </div>
+            )
+          }
         />
-      ))}
-      </div>
-      </div>
-      )}
-      </div>
+
+        <Route path="/properties" element={<Properties />} />
+
+        <Route path="/about" element={<About />} />
+
+      </Routes>
+
+    </BrowserRouter>
   )
 }
 

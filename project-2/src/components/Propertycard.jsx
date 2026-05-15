@@ -3,7 +3,7 @@ import img from "../assets/apartment.png";
 import "./Propertycard.css";
 import Save from "./Save";
 import "./Save.css";
-
+import { Link } from "react-router-dom";
 
 const Propertycard = ({ title, price, location, beds, baths, image }) => {
   return (
