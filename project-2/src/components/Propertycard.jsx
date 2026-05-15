@@ -5,18 +5,21 @@ import Save from "./Save";
 import "./Save.css";
 import { Link } from "react-router-dom";
 
-const Propertycard = ({ title, price, location, beds, baths, image }) => {
+const Propertycard = ({ id, title, price, location, beds, baths, image }) => {
   return (
     <div className="container">
-      <img src={img} alt={title} />
-      <h2>{title}</h2>
-      <p>{price}</p>
-      <p>{location}</p>
-      <p>{beds} Bedrooms </p>
-      <p>{baths} Bathrooms</p>
-      <Save />
-    </div>
-  );
-};
+    <Link to={`/properties/${id}`} className="property-link">
+        <img src={img} alt={title} />
+        <h2>{title}</h2>
+        </Link>
+        <p>{price}</p>
+        <p>{location}</p>
+        <p>{beds} Bedrooms </p>
+        <p>{baths} Bathrooms</p>
+        <Save />
+      </div>
+        
+  )
+}
 
-export default Propertycard;
+export default Propertycard

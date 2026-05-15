@@ -4,7 +4,7 @@
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-
+    
 }
 
 .nav-links a{
@@ -19,7 +19,8 @@
     color: #c35454;
 }
 .logo{
-    margin: auto;
+    
     height: 40px;
     width: 40px;
+    align-content: flex-end;
 }
