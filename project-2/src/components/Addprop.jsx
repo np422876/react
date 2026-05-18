@@ -1,7 +1,10 @@
 import React, { useState } from "react";
-import "./AddProp.css";
 
-const AddProp = ({ properties, setProperties }) => {
+import "./Addprop.css";
+
+const Addprop = ({ properties, setProperties }) => {
+
+  const [showForm, setShowForm] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -14,49 +17,130 @@ const AddProp = ({ properties, setProperties }) => {
   });
 
   const handleChange = (e) => {
+
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+
   };
 
   const handleSubmit = (e) => {
+    if (formData.beds < 0 || formData.baths < 0) {
+      alert("Bedrooms and Bathrooms cannot be negative.");
+      return;
+    }
 
-  e.preventDefault();
+    e.preventDefault();
 
-  const newProperty = {
-    id: Date.now(),
-    ...formData
+    const newProperty = {
+      id: Date.now(),
+      image: "https://via.placeholder.com/300",
+      ...formData
+    };
+
+    setProperties([...properties, newProperty]);
+
+    setFormData({
+      title: "",
+      price: "",
+      location: "",
+      type: "",
+      beds: "",
+      baths: "",
+      description: ""
+    });
+
+    setShowForm(false);
+
   };
 
-  setProperties([...properties, newProperty]);
-
-  console.log(newProperty);
-
-};
   return (
-    <form className="form" onSubmit={handleSubmit}>
 
-      <input type="text" name="title" placeholder="Property Title" onChange={handleChange} />
+    <div>
 
-      <input type="text" name="price" placeholder="Price" onChange={handleChange} />
-
-      <input type="text"  name="location" placeholder="Location" onChange={handleChange} />
-
-      <input type="text" name="type" placeholder="Property Type" onChange={handleChange} />
-
-      <input type="number" name="beds" placeholder="Beds" onChange={handleChange} />
-
-      <input type="number" name="baths" placeholder="Baths" onChange={handleChange} />
-
-      <textarea name="description"  placeholder="Description" onChange={handleChange}></textarea>
-
-      <button type="submit"> 
+      <button className="add-btn" onClick={() => setShowForm(true)} >
         Add Property
       </button>
 
-    </form>
+      {showForm && (
+
+        <form className="form" onSubmit={handleSubmit}>
+
+          <input type="text"
+            name="title"
+            placeholder="Title"
+            value={formData.title}
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            type="text"
+            name="price"
+            placeholder="Price"
+            value={formData.price}
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            type="text"
+            name="location"
+            placeholder="Location"
+            value={formData.location}
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            type="text"
+            name="type"
+            placeholder="Type"
+            value={formData.type}
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            type="number"
+            name="beds"
+            placeholder="Beds"
+            min={0}
+            value={formData.beds}
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            type="number"
+            name="baths"
+            placeholder="Baths"
+            min={0}
+            value={formData.baths}
+            onChange={handleChange}
+            required
+          />
+
+          <textarea
+            name="description"
+            placeholder="Description"
+            value={formData.description}
+            onChange={handleChange}
+            required
+          ></textarea>
+
+          <button type="submit">
+            Submit Property
+          </button>
+
+        </form>
+
+      )}
+
+    </div>
+
   );
 };
 
-export default AddProp
+export default Addprop;
