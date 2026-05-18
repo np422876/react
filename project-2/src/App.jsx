@@ -52,50 +52,88 @@ function App() {
   }, [])
 
   return (
+
     <BrowserRouter>
 
       <Navbar>
-       <input type="text" placeholder="Search properties..." className="searchbox" onChange={handleSearch}/>
-      </Navbar> 
+        <input
+          type="text"
+          placeholder="Search properties..."
+          className="searchbox"
+          onChange={handleSearch}
+        />
+      </Navbar>
+
       <Routes>
 
-       <Route path="/properties/:id" element={<Properties />} />
-        
         <Route
-          path="/" element={ loading ? (
+          path="/"
+          element={
+
+            loading ? (
+
               <div className="loading">
                 <div className="spinner"></div>
               </div>
+
             ) : error ? (
+
               <h2>{error}</h2>
+
             ) : (
-              
-              <div className="user">
-                {properties.map((property) => (
-                  console.log(property),
-                  <Propertycard
-                    key={property.id}
-                    id={property.id}
-                    title={property.title}
-                    price={property.price}
-                    location={property.location}
-                    beds={property.beds}
-                    baths={property.baths}
-                    image={property.image}
-                  />
-                ))}
+
+              <div>
+
+                <Home
+                  properties={properties}
+                  setProperties={setProperties}
+                />
+
+                <div className="user">
+
+                  {properties.map((property) => (
+
+                    <Propertycard
+                      key={property.id}
+                      id={property.id}
+                      title={property.title}
+                      price={property.price}
+                      location={property.location}
+                      beds={property.beds}
+                      baths={property.baths}
+                      image={property.image}
+                    />
+
+                  ))}
+
+                </div>
+
               </div>
+
             )
+
           }
         />
 
-        <Route path="/properties" element={<Properties />} />
+        <Route
+          path="/properties"
+          element={<Properties />}
+        />
 
-        <Route path="/about" element={<About />} />
+        <Route
+          path="/properties/:id"
+          element={<Properties />}
+        />
+
+        <Route
+          path="/about"
+          element={<About />}
+        />
 
       </Routes>
 
     </BrowserRouter>
+
   )
 }
 

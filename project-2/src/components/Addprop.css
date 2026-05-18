@@ -1,0 +1,29 @@
+.form{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 400px;
+    margin: 30px auto;
+}
+
+.property-form input,
+.property-form textarea{
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid gray;
+    font-size: 16px;
+}
+
+.property-form textarea{
+    height: 100px;
+}
+
+.property-form button{
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+}

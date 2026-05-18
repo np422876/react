@@ -1,13 +1,20 @@
-import React from 'react'
-import "./Home.css";
+import React from "react";
+import Addprop from "../components/Addprop";
 
-const Home = () => {
+function Home({ properties, setProperties }) {
+
   return (
-    <div className='home'>
-      <h1>Home Page</h1>
-      <p>All Properties Listed Here</p>
+
+    <div>
+
+      <Addprop
+        properties={properties}
+        setProperties={setProperties}
+      />
+
     </div>
-  )
+
+  );
 }
 
-export default Home
+export default Home;

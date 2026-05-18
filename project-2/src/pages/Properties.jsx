@@ -30,13 +30,9 @@ const Properties = () => {
 
   return (
 
-    <div>
+    <div className='properties'>
 
-      <img
-        src={property.image}
-        alt={property.title}
-        width="300"
-      />
+      <img src={property.image} alt={property.title} width="300" />
 
       <h1>{property.title}</h1>
 
