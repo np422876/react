@@ -3,7 +3,7 @@ import "./Navbar.css";
 import img from "../assets/realestate-removebg-preview.png";
 import { Link } from "react-router-dom";
 
-function Navbar() {
+function Navbar({children}) {
   return (
     <div className="navbar">
         <h1 className="logo">
@@ -14,8 +14,10 @@ function Navbar() {
         <Link to="/properties">Properties</Link>
         <Link to="/about">About</Link>
         </div>
+        {children}
     </div>
   )
 }
+
 
 export default Navbar

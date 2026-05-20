@@ -15,12 +15,33 @@ import "./components/Save.css"
 function App() {
 
   const handleSearch = (e) => {
-    console.log(e.target.value)
+    setSearch(e.target.value)
   }
 
-  const [properties, setProperties] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
+  const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [properties, setProperties] = useState(() => {
+  
+
+    const savedProperties =
+      localStorage.getItem("properties");
+
+    return savedProperties
+      ? JSON.parse(savedProperties)
+      : [];
+  });
+
+  useEffect(() => {
+
+    localStorage.setItem(
+      "properties",
+      JSON.stringify(properties)
+    );
+
+  }, [properties]);
 
   useEffect(() => {
 
@@ -38,9 +59,18 @@ function App() {
         })
 
         .then((data) => {
-          setProperties(data)
-          setLoading(false)
-        })
+          const savedProperties =
+    JSON.parse(localStorage.getItem("properties")) || [];
+
+  if (savedProperties.length > 0) {
+    setProperties(savedProperties)
+  } else {
+    setProperties(data)
+  }
+
+  setLoading(false)
+
+})
 
         .catch((err) => {
           setError(err.message)
@@ -51,6 +81,29 @@ function App() {
 
   }, [])
 
+  const filteredProperties = properties.filter((property) => {
+
+  const matchesSearch =
+    property.title
+      .toLowerCase()
+      .includes(search.toLowerCase());
+
+  const matchesType =
+    typeFilter === "" ||
+    property.type === typeFilter;
+
+  const matchesPrice =
+    maxPrice === "" ||
+    Number(property.price) <= Number(maxPrice);
+
+  return (
+    matchesSearch &&
+    matchesType &&
+    matchesPrice
+  );
+
+});
+
   return (
 
     <BrowserRouter>
@@ -58,10 +111,32 @@ function App() {
       <Navbar>
         <input
           type="text"
-          placeholder="Search properties..."
+          placeholder="Search by title"
+          value={search}
           className="searchbox"
           onChange={handleSearch}
         />
+        <select
+    value={typeFilter}
+    onChange={(e) => setTypeFilter(e.target.value)}
+  >
+
+    <option value="">All Types</option>
+    <option value="Apartment">Apartment</option>
+    <option value="Villa">Villa</option>
+    <option value="Studio">Studio</option>
+
+  </select>
+
+  <input
+    type="number"
+    placeholder="Max Price"
+    min={0}
+    value={maxPrice}
+    onChange={(e) => setMaxPrice(e.target.value)}
+  />
+
+
       </Navbar>
 
       <Routes>
@@ -91,7 +166,7 @@ function App() {
 
                 <div className="user">
 
-                  {properties.map((property) => (
+                  {filteredProperties.map((property) => (
 
                     <Propertycard
                       key={property.id}

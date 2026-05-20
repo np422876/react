@@ -24,3 +24,22 @@
     width: 40px;
     align-content: flex-end;
 }
+
+.searchbox:focus{
+    border-color: #ff5a5f;
+}
+
+select{
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-left: 10px;
+}
+
+input[type="number"]{
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-left: 10px;
+    width: 140px;
+}

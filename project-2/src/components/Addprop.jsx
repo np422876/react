@@ -16,6 +16,18 @@ const Addprop = ({ properties, setProperties }) => {
     description: ""
   });
 
+  
+
+ const isFormValid =
+  formData.title.trim() !== "" &&
+  formData.price.trim() !== "" &&
+  formData.location.trim() !== "" &&
+  formData.type.trim() !== "" &&
+  formData.beds !== "" &&
+  formData.baths !== "" &&
+  formData.description.trim() !== "";
+  
+
   const handleChange = (e) => {
 
     setFormData({
@@ -131,7 +143,7 @@ const Addprop = ({ properties, setProperties }) => {
           ></textarea>
 
           <button type="submit">
-            Submit Property
+            Add Property
           </button>
 
         </form>
@@ -139,6 +151,7 @@ const Addprop = ({ properties, setProperties }) => {
       )}
 
     </div>
+
 
   );
 };
