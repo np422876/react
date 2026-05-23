@@ -13,6 +13,7 @@ function Navbar({children}) {
             <Link to="/">Home</Link>
         <Link to="/properties">Properties</Link>
         <Link to="/about">About</Link>
+        <Link to="/saved">Saved</Link>
         </div>
         {children}
     </div>

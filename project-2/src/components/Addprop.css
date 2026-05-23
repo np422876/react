@@ -23,14 +23,16 @@
     background-color: #a04242;
 }
 .add-btn{
-    margin: 15px;
     padding: 10px;
     font-size: 16px;
     background-color: #000000;
     color: white;
     border: none;
     cursor: pointer;
+    margin-left: 50px;
+    margin-top: -40px;
 }
+
 .add-btn:hover{
     background-color: #a04242;
 }       

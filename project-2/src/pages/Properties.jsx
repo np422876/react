@@ -1,29 +1,25 @@
-import React, { useEffect, useState } from 'react'
+import React, {
+  useContext
+} from 'react'
+
 import { useParams } from 'react-router-dom'
+
+import { PropertyContext }
+from '../context/PropertyContext'
 
 const Properties = () => {
 
+  const { properties } =
+    useContext(PropertyContext)
+
   const { id } = useParams()
 
-  const [property, setProperty] = useState(null)
+  // Find selected property
+  const property = properties.find(
+    (item) => item.id == id
+  )
 
-  useEffect(() => {
-
-    fetch("https://6a0417582afe8349b4b5d8e5.mockapi.io/api/properties")
-
-      .then((response) => response.json())
-
-      .then((data) => {
-
-        const selectedProperty = data.find(
-          (item) => item.id == id
-        )
-
-        setProperty(selectedProperty)
-      })
-
-  }, [id])
-
+  // Loading check
   if (!property) {
     return <h1>Loading...</h1>
   }
@@ -32,7 +28,11 @@ const Properties = () => {
 
     <div className='properties'>
 
-      <img src={property.image} alt={property.title} width="300" />
+      <img
+        src={property.image}
+        alt={property.title}
+        width="300"
+      />
 
       <h1>{property.title}</h1>
 
@@ -40,13 +40,18 @@ const Properties = () => {
 
       <p>{property.location}</p>
 
-      <p>{property.beds} Bedrooms</p>
+      <p>
+        {property.beds} Bedrooms
+      </p>
 
-      <p>{property.baths} Bathrooms</p>
+      <p>
+        {property.baths} Bathrooms
+      </p>
 
       <p>{property.description}</p>
 
     </div>
+
   )
 }
 
