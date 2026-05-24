@@ -50,7 +50,6 @@ function App() {
   const [maxPrice, setMaxPrice] =
     useState("");
 
-  // Save / Unsave
   const handleSave = (property) => {
 
     const alreadySaved =
@@ -81,12 +80,10 @@ function App() {
 
   };
 
-  // Search
   const handleSearch = (e) => {
     setSearch(e.target.value);
   };
 
-  // LocalStorage
   useEffect(() => {
 
     localStorage.setItem(
@@ -117,12 +114,23 @@ function App() {
 
       .then((data) => {
 
-        setProperties(data);
+const storedProperties =
+  JSON.parse(
+    localStorage.getItem("properties")
+  );
 
+if (storedProperties) {
+
+  setProperties(storedProperties);
+
+} else {
+
+  setProperties(data);
+
+}
         const storedSaved =
           JSON.parse(
-            localStorage.getItem(
-              "savedProperties"
+            localStorage.getItem("savedProperties"
             )
           ) || [];
 

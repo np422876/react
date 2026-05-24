@@ -25,19 +25,17 @@ function Propertycard(props) {
           className={styles.image}
         />
 
+        <span className={styles.badge}>
+          FOR SALE
+        </span>
+
         <h3 className={styles.title}>
           {property.title}
         </h3>
 
       </Link>
 
-      <div className={styles.content}>
-
-        <span className={styles.badge}>
-          FOR SALE
-        </span>
-
-        <h2 className={styles.price}>
+      <h2 className={styles.price}>
           {property.price}
         </h2>
 
@@ -79,7 +77,7 @@ function Propertycard(props) {
 
       </div>
 
-    </div>
+  
 
   );
 

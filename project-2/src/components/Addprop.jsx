@@ -1,26 +1,21 @@
-import React, {
-  useState,
-  useContext
-} from "react";
-
+import React, { useState, useContext } from "react";
 import "./Addprop.css";
-
-import {
-  PropertyContext
-} from "../context/PropertyContext";
+import { PropertyContext } from "../context/PropertyContext";
 
 function Addprop() {
 
-  const {
-    properties,
-    setProperties
-  } = useContext(PropertyContext);
+  const { properties, setProperties } =
+    useContext(PropertyContext);
 
-  // Show / Hide Form
   const [showForm, setShowForm] =
     useState(false);
 
-  // Form States
+  const [loading, setLoading] =
+    useState(false);
+
+  const [error, setError] =
+    useState("");
+
   const [title, setTitle] =
     useState("");
 
@@ -49,53 +44,83 @@ function Addprop() {
 
     e.preventDefault();
 
+    // Validation
+
+    if (
+      !title ||
+      !price ||
+      !location ||
+      !beds ||
+      !baths ||
+      !image ||
+      !description ||
+      !type
+    ) {
+      setError("Please fill all fields");
+      return;
+    }
+
+    setError("");
+
+    setLoading(true);
+
     const newProperty = {
-
       id: Date.now().toString(),
-
       title,
       price,
       location,
-
       beds: Number(beds),
-
       baths: Number(baths),
-
       image,
       description,
       type
-
     };
 
-    setProperties([
-      ...properties,
-      newProperty
-    ]);
+    // Simulate loading
 
-    // Clear Form
-    setTitle("");
-    setPrice("");
-    setLocation("");
-    setBeds("");
-    setBaths("");
-    setImage("");
-    setDescription("");
-    setType("");
+    setTimeout(() => {
 
-    // Hide Form
-    setShowForm(false);
+      const updatedProperties = [
+        ...properties,
+        newProperty
+      ];
+
+      setProperties(updatedProperties);
+
+      localStorage.setItem(
+        "properties",
+        JSON.stringify(updatedProperties)
+      );
+
+      // Clear form
+
+      setTitle("");
+      setPrice("");
+      setLocation("");
+      setBeds("");
+      setBaths("");
+      setImage("");
+      setDescription("");
+      setType("");
+
+      // Hide form
+
+      setShowForm(false);
+
+      setLoading(false);
+
+    }, 3000);
 
   };
 
   return (
 
     <div className="add-property-container">
-
+  
       {/* Button */}
 
       <button
         className="add-btn"
-
         onClick={() =>
           setShowForm(!showForm)
         }
@@ -125,9 +150,7 @@ function Addprop() {
             placeholder="Title"
             value={title}
             onChange={(e) =>
-              setTitle(
-                e.target.value
-              )
+              setTitle(e.target.value)
             }
           />
 
@@ -136,9 +159,7 @@ function Addprop() {
             placeholder="Price"
             value={price}
             onChange={(e) =>
-              setPrice(
-                e.target.value
-              )
+              setPrice(e.target.value)
             }
           />
 
@@ -147,33 +168,29 @@ function Addprop() {
             placeholder="Location"
             value={location}
             onChange={(e) =>
-              setLocation(
-                e.target.value
-              )
+              setLocation(e.target.value)
             }
           />
 
           <input
             type="number"
+            className="number-field"
             placeholder="Bedrooms"
             min="0"
             value={beds}
             onChange={(e) =>
-              setBeds(
-                e.target.value
-              )
+              setBeds(e.target.value)
             }
           />
 
           <input
             type="number"
+            className="number-field"
             placeholder="Bathrooms"
             min="0"
             value={baths}
             onChange={(e) =>
-              setBaths(
-                e.target.value
-              )
+              setBaths(e.target.value)
             }
           />
 
@@ -182,18 +199,14 @@ function Addprop() {
             placeholder="Image URL"
             value={image}
             onChange={(e) =>
-              setImage(
-                e.target.value
-              )
+              setImage(e.target.value)
             }
           />
 
           <select
             value={type}
             onChange={(e) =>
-              setType(
-                e.target.value
-              )
+              setType(e.target.value)
             }
           >
 
@@ -237,11 +250,50 @@ function Addprop() {
             }
           />
 
-          <button type="submit">
-            Add Property
-          </button>
+          {error && (
+  <div className="error-box">
+    <h3>⚠ {error}</h3>
+  </div>
+)}
+
+          {/* Loading Skeleton */}
+
+          {loading ? (
+
+            <div className="skeleton-container">
+
+              <div className="skeleton-card"></div>
+
+            </div>
+
+          ) : (
+            
+            
+            <button type="submit">
+              Add Property
+            </button>
+
+          )}
 
         </form>
+
+      )}
+
+      {/* No Properties Message */}
+
+      {properties.length === 0 && (
+
+        <div className="no-properties">
+
+          <h2>
+            No properties found
+          </h2>
+
+          <p>
+            Add a property to see it here
+          </p>
+
+        </div>
 
       )}
 
