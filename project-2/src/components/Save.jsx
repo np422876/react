@@ -1,58 +1,46 @@
-import React, { useContext } from 'react'
+import React from "react";
 
-import "./Save.css"
+import Propertycard
+from "../components/Propertycard";
 
-import { PropertyContext }
-from '../context/PropertyContext'
-
-const Save = ({ property }) => {
-
-  const {
-    savedProperties,
-    setSavedProperties
-  } = useContext(PropertyContext)
-
-  // Check if already saved
-  const isSaved = savedProperties.some(
-    (item) => item.id === property.id
-  )
-
-  const handleSave = () => {
-
-    if (isSaved) {
-
-      // Remove from saved
-      const updatedProperties =
-        savedProperties.filter(
-          (item) => item.id !== property.id
-        )
-
-      setSavedProperties(updatedProperties)
-
-    } else {
-
-      // Add to saved
-      setSavedProperties([
-        ...savedProperties,
-        property
-      ])
-
-    }
-
-  }
+function Save({
+  savedProperties,
+  handleSave
+}) {
 
   return (
 
-    <button
-      onClick={handleSave}
-      id={isSaved ? "saved-btn" : "btn"}
-    >
+    <div className="user">
 
-      {isSaved ? "Saved❤️" : "Save❤️"}
+      {savedProperties.length === 0 ? (
 
-    </button>
+        <h2>
+          No Saved Properties
+        </h2>
 
-  )
+      ) : (
+
+        savedProperties.map(
+          (property) => (
+
+            <Propertycard
+              key={property.id}
+              property={property}
+              handleSave={
+                handleSave
+              }
+              isSaved={true}
+            />
+
+          )
+        )
+
+      )}
+
+    </div>
+
+  );
+
 }
 
 export default Save

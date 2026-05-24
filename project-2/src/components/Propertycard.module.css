@@ -1,6 +1,6 @@
 .card {
   width: 300px;
-  background: white;
+  
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
@@ -17,9 +17,10 @@
 }
 
 .image {
-  width: 100%;
+  width: 280px;
   height: 220px;
-  object-fit: cover;
+  
+  border-radius: 15px;
 }
 
 .content {
@@ -61,6 +62,15 @@
   padding: 12px;
   background: black;
   color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.savedButton{
+  background-color: #c35555;
+  color: white;width: 100%;
+  padding: 12px;
   border: none;
   border-radius: 10px;
   cursor: pointer;

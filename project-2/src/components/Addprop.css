@@ -1,57 +1,67 @@
-.form{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
-    width: 300px;
-}
-.form input{
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-}
-.form button{
-    padding: 10px;
-    font-size: 16px;
-    background-color: #c35454;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-.form button:hover{
-    background-color: #a04242;
-}
-.add-btn{
-    padding: 10px;
-    font-size: 16px;
-    background-color: #000000;
-    color: white;
-    border: none;
-    cursor: pointer;
-    margin-left: 50px;
-    margin-top: -40px;
+.add-property-container {
+  margin: 40px;
 }
 
-.add-btn:hover{
-    background-color: #a04242;
-}       
+/* Toggle Button */
 
-.form textarea{
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    resize: none;
+.add-btn {
+  padding: 12px 20px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 20px;
 }
 
-.error{
-  color: red;
-  font-size: 14px;
-  margin-top: 2px;
-  margin-bottom: 10px;
+/* Form */
+
+.form {
+  width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-button:disabled{
-  background-color: gray;
+/* ALL INPUTS */
+
+.form input[type="text"],
+.form input[type="text"],
+.form select,
+.form textarea {
+  width: 420px;
+  padding: 14px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+/* Textarea */
+
+.form textarea {
+  height: 120px;
+  resize: none;
+}
+
+/* Submit Button */
+
+.form button {
+  width: 420px;
+  padding: 14px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.form input[type="number"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  width: 420px;
+  padding: 14px;
+  box-sizing: border-box;
 }

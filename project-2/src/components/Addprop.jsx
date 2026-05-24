@@ -1,146 +1,241 @@
-import React, { useState } from "react";
+import React, {
+  useState,
+  useContext
+} from "react";
 
 import "./Addprop.css";
 
-const Addprop = ({ properties, setProperties }) => {
+import {
+  PropertyContext
+} from "../context/PropertyContext";
 
-  const [showForm, setShowForm] = useState(false);
+function Addprop() {
 
-  const [formData, setFormData] = useState({
-    title: "",
-    price: "",
-    location: "",
-    type: "",
-    beds: "",
-    baths: "",
-    description: ""
-  });
+  const {
+    properties,
+    setProperties
+  } = useContext(PropertyContext);
 
-  
+  // Show / Hide Form
+  const [showForm, setShowForm] =
+    useState(false);
 
- const isFormValid =
-  formData.title.trim() !== "" &&
-  formData.price.trim() !== "" &&
-  formData.location.trim() !== "" &&
-  formData.type.trim() !== "" &&
-  formData.beds !== "" &&
-  formData.baths !== "" &&
-  formData.description.trim() !== "";
-  
+  // Form States
+  const [title, setTitle] =
+    useState("");
 
-  const handleChange = (e) => {
+  const [price, setPrice] =
+    useState("");
 
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  const [location, setLocation] =
+    useState("");
 
-  };
+  const [beds, setBeds] =
+    useState("");
+
+  const [baths, setBaths] =
+    useState("");
+
+  const [image, setImage] =
+    useState("");
+
+  const [description, setDescription] =
+    useState("");
+
+  const [type, setType] =
+    useState("");
 
   const handleSubmit = (e) => {
-    if (formData.beds < 0 || formData.baths < 0) {
-      alert("Bedrooms and Bathrooms cannot be negative.");
-      return;
-    }
 
     e.preventDefault();
 
     const newProperty = {
-      id: Date.now(),
-      image: "https://via.placeholder.com/300",
-      ...formData
+
+      id: Date.now().toString(),
+
+      title,
+      price,
+      location,
+
+      beds: Number(beds),
+
+      baths: Number(baths),
+
+      image,
+      description,
+      type
+
     };
 
-    setProperties([...properties, newProperty]);
+    setProperties([
+      ...properties,
+      newProperty
+    ]);
 
-    setFormData({
-      title: "",
-      price: "",
-      location: "",
-      type: "",
-      beds: "",
-      baths: "",
-      description: ""
-    });
+    // Clear Form
+    setTitle("");
+    setPrice("");
+    setLocation("");
+    setBeds("");
+    setBaths("");
+    setImage("");
+    setDescription("");
+    setType("");
 
+    // Hide Form
     setShowForm(false);
 
   };
 
   return (
 
-    <div>
+    <div className="add-property-container">
 
-      <button className="add-btn" onClick={() => setShowForm(true)} >
-        Add Property
+      {/* Button */}
+
+      <button
+        className="add-btn"
+
+        onClick={() =>
+          setShowForm(!showForm)
+        }
+      >
+
+        {showForm
+          ? "Close Form"
+          : "Add Property"}
+
       </button>
+
+      {/* Form */}
 
       {showForm && (
 
-        <form className="form" onSubmit={handleSubmit}>
+        <form
+          className="form"
+          onSubmit={handleSubmit}
+        >
 
-          <input type="text"
-            name="title"
+          <h2>
+            Add Property
+          </h2>
+
+          <input
+            type="text"
             placeholder="Title"
-            value={formData.title}
-            onChange={handleChange}
-            required
+            value={title}
+            onChange={(e) =>
+              setTitle(
+                e.target.value
+              )
+            }
           />
 
           <input
             type="text"
-            name="price"
             placeholder="Price"
-            value={formData.price}
-            onChange={handleChange}
-            required
+            value={price}
+            onChange={(e) =>
+              setPrice(
+                e.target.value
+              )
+            }
           />
 
           <input
             type="text"
-            name="location"
             placeholder="Location"
-            value={formData.location}
-            onChange={handleChange}
-            required
+            value={location}
+            onChange={(e) =>
+              setLocation(
+                e.target.value
+              )
+            }
+          />
+
+          <input
+            type="number"
+            placeholder="Bedrooms"
+            min="0"
+            value={beds}
+            onChange={(e) =>
+              setBeds(
+                e.target.value
+              )
+            }
+          />
+
+          <input
+            type="number"
+            placeholder="Bathrooms"
+            min="0"
+            value={baths}
+            onChange={(e) =>
+              setBaths(
+                e.target.value
+              )
+            }
           />
 
           <input
             type="text"
-            name="type"
-            placeholder="Type"
-            value={formData.type}
-            onChange={handleChange}
-            required
+            placeholder="Image URL"
+            value={image}
+            onChange={(e) =>
+              setImage(
+                e.target.value
+              )
+            }
           />
 
-          <input
-            type="number"
-            name="beds"
-            placeholder="Beds"
-            min={0}
-            value={formData.beds}
-            onChange={handleChange}
-            required
-          />
+          <select
+            value={type}
+            onChange={(e) =>
+              setType(
+                e.target.value
+              )
+            }
+          >
 
-          <input
-            type="number"
-            name="baths"
-            placeholder="Baths"
-            min={0}
-            value={formData.baths}
-            onChange={handleChange}
-            required
-          />
+            <option value="">
+              Select Type
+            </option>
+
+            <option value="Apartment">
+              Apartment
+            </option>
+
+            <option value="Villa">
+              Villa
+            </option>
+
+            <option value="Flat">
+              Flat
+            </option>
+
+            <option value="Studio">
+              Studio
+            </option>
+
+            <option value="Bunglow">
+              Bunglow
+            </option>
+
+            <option value="Mansion">
+              Mansion
+            </option>
+
+          </select>
 
           <textarea
-            name="description"
             placeholder="Description"
-            value={formData.description}
-            onChange={handleChange}
-            required
-          ></textarea>
+            value={description}
+            onChange={(e) =>
+              setDescription(
+                e.target.value
+              )
+            }
+          />
 
           <button type="submit">
             Add Property
@@ -152,8 +247,8 @@ const Addprop = ({ properties, setProperties }) => {
 
     </div>
 
-
   );
-};
+
+}
 
 export default Addprop;

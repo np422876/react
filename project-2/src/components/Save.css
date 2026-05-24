@@ -1,4 +1,4 @@
-#btn {
+.btn {
   padding: 10px 16px;
   border: none;
   border-radius: 8px;
@@ -9,11 +9,11 @@
 
 }
 
-#saved-btn {
+.saved-btn {
   padding: 10px 16px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  background-color: #c35454;
+  background-color: #c35555;
   color: rgb(255, 255, 255);
 }

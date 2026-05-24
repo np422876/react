@@ -1,100 +1,145 @@
-import React, {useState,useEffect,useContext} from 'react'
+import React, {
+  useState,
+  useEffect,
+  useContext
+} from "react";
 
-import {BrowserRouter,Routes, Route} from 'react-router-dom'
+import {
+  BrowserRouter,
+  Routes,
+  Route
+} from "react-router-dom";
 
-import { PropertyContext } from "./context/PropertyContext"
+import { PropertyContext }
+from "./context/PropertyContext";
 
-import Home from './pages/Home'
-import Properties from './pages/Properties'
-import About from './pages/About'
-import Saved from './pages/Saved'
+import Home from "./pages/Home";
+import Properties from "./pages/Properties";
+import About from "./pages/About";
+import Saved from "./pages/Saved";
 import PropertyDetails from "./pages/PropertyDetails";
 
-import Navbar from './components/Navbar'
-import Propertycard from './components/Propertycard'
+import Navbar from "./components/Navbar";
+import Propertycard from "./components/Propertycard";
 
-import "./App.css"
-import "./components/Navbar.css"
-import "./components/Save.css"
+import "./App.css";
+import "./components/Navbar.css";
+import "./components/Save.css";
 
 function App() {
 
-  // Context
   const {
     properties,
-    setProperties
-  } = useContext(PropertyContext)
+    setProperties,
+    savedProperties,
+    setSavedProperties
+  } = useContext(PropertyContext);
 
-  // States
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState("")
-  const [search, setSearch] = useState("")
-  const [typeFilter, setTypeFilter] = useState("")
-  const [maxPrice, setMaxPrice] = useState("")
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState("");
+
+  const [search, setSearch] =
+    useState("");
+
+  const [typeFilter, setTypeFilter] =
+    useState("");
+
+  const [maxPrice, setMaxPrice] =
+    useState("");
+
+  // Save / Unsave
+  const handleSave = (property) => {
+
+    const alreadySaved =
+      savedProperties.find(
+        (item) =>
+          item.id === property.id
+      );
+
+    if (alreadySaved) {
+
+      setSavedProperties(
+
+        savedProperties.filter(
+          (item) =>
+            item.id !== property.id
+        )
+
+      );
+
+    } else {
+
+      setSavedProperties([
+        ...savedProperties,
+        property
+      ]);
+
+    }
+
+  };
 
   // Search
   const handleSearch = (e) => {
-    setSearch(e.target.value)
-  }
+    setSearch(e.target.value);
+  };
 
-  // Saved to localStorage
+  // LocalStorage
   useEffect(() => {
 
     localStorage.setItem(
-      "properties",
-      JSON.stringify(properties)
-    )
+      "savedProperties",
+      JSON.stringify(savedProperties)
+    );
 
-  }, [properties])
+  }, [savedProperties]);
 
-  // Fetch properties
+  // Fetch Properties
   useEffect(() => {
 
-    setTimeout(() => {
+    fetch(
+      "https://6a0417582afe8349b4b5d8e5.mockapi.io/api/properties"
+    )
 
-      fetch(
-        "https://6a0417582afe8349b4b5d8e5.mockapi.io/api/properties"
-      )
+      .then((response) => {
 
-        .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            "Failed to fetch properties"
+          );
+        }
 
-          if (!response.ok) {
-            throw new Error(
-              "Failed to fetch properties"
+        return response.json();
+
+      })
+
+      .then((data) => {
+
+        setProperties(data);
+
+        const storedSaved =
+          JSON.parse(
+            localStorage.getItem(
+              "savedProperties"
             )
-          }
+          ) || [];
 
-          return response.json()
+        setSavedProperties(storedSaved);
 
-        })
+        setLoading(false);
 
-        .then((data) => {
+      })
 
-          const savedProperties =
-            JSON.parse(
-              localStorage.getItem("properties")
-            ) || []
+      .catch((err) => {
 
-          if (savedProperties.length > 0) {
-            setProperties(savedProperties)
-          } else {
-            setProperties(data)
-          }
+        setError(err.message);
+        setLoading(false);
 
-          setLoading(false)
+      });
 
-        })
-
-        .catch((err) => {
-
-          setError(err.message)
-          setLoading(false)
-
-        })
-
-    }, 1000)
-
-  }, [])
+  }, []);
 
   // Filters
   const filteredProperties =
@@ -103,18 +148,18 @@ function App() {
       const matchesSearch =
         property.title
           ?.toLowerCase()
-          .includes(search.toLowerCase())
+          .includes(
+            search.toLowerCase()
+          );
 
       const matchesType =
+
         typeFilter === "" ||
 
         property.type
-          ?.trim()
-          .toLowerCase() ===
-
-        typeFilter
-          .trim()
-          .toLowerCase()
+          ?.toLowerCase()
+          ===
+        typeFilter.toLowerCase();
 
       const matchesPrice =
 
@@ -125,15 +170,17 @@ function App() {
             .replace(/[^0-9]/g, "")
         )
 
-        <= Number(maxPrice)
+        <= Number(maxPrice);
 
       return (
+
         matchesSearch &&
         matchesType &&
         matchesPrice
-      )
 
-    })
+      );
+
+    });
 
   return (
 
@@ -154,7 +201,9 @@ function App() {
         <select
           value={typeFilter}
           onChange={(e) =>
-            setTypeFilter(e.target.value)
+            setTypeFilter(
+              e.target.value
+            )
           }
         >
 
@@ -194,7 +243,9 @@ function App() {
           min={0}
           value={maxPrice}
           onChange={(e) =>
-            setMaxPrice(e.target.value)
+            setMaxPrice(
+              e.target.value
+            )
           }
         />
 
@@ -229,13 +280,17 @@ function App() {
 
                       <Propertycard
                         key={property.id}
-                        id={property.id}
-                        title={property.title}
-                        price={property.price}
-                        location={property.location}
-                        beds={property.beds}
-                        baths={property.baths}
-                        image={property.image}
+                        property={property}
+                        handleSave={
+                          handleSave
+                        }
+                        isSaved={
+                          savedProperties.some(
+                            (item) =>
+                              item.id ===
+                              property.id
+                          )
+                        }
                       />
 
                     )
@@ -251,13 +306,15 @@ function App() {
         />
 
         <Route
-          path="/"
-          element={<Properties/>}
+          path="/properties/:id"
+          element={
+            <PropertyDetails />
+          }
         />
 
         <Route
-          path="/properties/:id"
-          element={<PropertyDetails />}
+          path="/properties"
+          element={<Properties />}
         />
 
         <Route
@@ -267,14 +324,24 @@ function App() {
 
         <Route
           path="/saved"
-          element={<Saved />}
+          element={
+            <Saved
+              savedProperties={
+                savedProperties
+              }
+              handleSave={
+                handleSave
+              }
+            />
+          }
         />
 
       </Routes>
 
     </BrowserRouter>
 
-  )
+  );
+
 }
 
-export default App
+export default App;
