@@ -1,22 +1,31 @@
 import React from "react";
+import styles from "./Propertycard.module.css";
+import { Link } from "react-router-dom";
 
-import styles from
-"./Propertycard.module.css";
-
-import { Link }
-from "react-router-dom";
-
-function Propertycard(props) {
-
-  const { property } = props;
+function Propertycard({
+  property,
+  handleSave,
+  isSaved,
+  onCardClick
+}) {
 
   return (
 
-    <div className={styles.card}>
+    <div
+      className={styles.card}
+      onClick={() =>
+        onCardClick?.(property)
+      }
+    >
+
+      {/* IMAGE */}
 
       <Link
         to={`/properties/${property.id}`}
         className={styles.cardlink}
+        onClick={(e) =>
+          e.stopPropagation()
+        }
       >
 
         <img
@@ -35,49 +44,56 @@ function Propertycard(props) {
 
       </Link>
 
-      <h2 className={styles.price}>
-          {property.price}
-        </h2>
+      {/* PRICE */}
 
-        <p className={styles.location}>
-          {property.location}
+      <h2 className={styles.price}>
+        {property.price}
+      </h2>
+
+      {/* LOCATION */}
+
+      <p className={styles.location}>
+        {property.location}
+      </p>
+
+      {/* DETAILS */}
+
+      <div className={styles.details}>
+
+        <p>
+          Bedrooms {property.beds}
         </p>
 
-        <div className={styles.details}>
-
-          <p>
-            Bedrooms {property.beds}
-          </p>
-
-          <p>
-            Bathrooms {property.baths}
-          </p>
-
-        </div>
-
-        <button
-
-          onClick={() =>
-            props.handleSave(property)
-          }
-
-          className={
-            props.isSaved
-              ? styles.savedButton
-              : styles.button
-          }
-
-        >
-
-          {props.isSaved
-            ? "Saved❤️"
-            : "Save❤️"}
-
-        </button>
+        <p>
+          Bathrooms {property.baths}
+        </p>
 
       </div>
 
-  
+      {/* SAVE BUTTON */}
+
+      <button
+        onClick={(e) => {
+
+          e.stopPropagation();
+
+          handleSave(property);
+
+        }}
+        className={
+          isSaved
+            ? styles.savedButton
+            : styles.button
+        }
+      >
+
+        {isSaved
+          ? "Saved❤️"
+          : "Save❤️"}
+
+      </button>
+
+    </div>
 
   );
 

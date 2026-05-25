@@ -76,6 +76,8 @@ function Addprop() {
       type
     };
 
+    
+
     // Simulate loading
 
     setTimeout(() => {
@@ -91,7 +93,7 @@ function Addprop() {
         "properties",
         JSON.stringify(updatedProperties)
       );
-
+window.location.reload();
       // Clear form
 
       setTitle("");
@@ -279,23 +281,6 @@ function Addprop() {
 
       )}
 
-      {/* No Properties Message */}
-
-      {properties.length === 0 && (
-
-        <div className="no-properties">
-
-          <h2>
-            No properties found
-          </h2>
-
-          <p>
-            Add a property to see it here
-          </p>
-
-        </div>
-
-      )}
 
     </div>
 

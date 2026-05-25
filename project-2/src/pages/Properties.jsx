@@ -1,58 +1,158 @@
-import React, {
-  useContext
-} from 'react'
+import React, { useState, useEffect } from "react";
+import Propertycard from "../components/Propertycard";
 
-import { useParams } from 'react-router-dom'
+function Properties({
+  savedProperties,
+  handleSave
+}) {
+  const [properties, setProperties] =
+    useState([]);
 
-import { PropertyContext }
-from '../context/PropertyContext'
+  const [loading, setLoading] =
+    useState(true);
 
-const Properties = () => {
+  const [error, setError] =
+    useState("");
 
-  const { properties } =
-    useContext(PropertyContext)
+  // Fetch Properties
 
-  const { id } = useParams()
+  useEffect(() => {
 
-  // Find selected property
-  const property = properties.find(
-    (item) => item.id == id
+    setLoading(true);
+
+    setTimeout(() => {
+
+      fetch(
+        "https://6a0417582afe8349b4b5d8e5.mockapi.io/api/properties"
+      )
+
+        .then((res) => res.json())
+
+        .then((apiData) => {
+
+          // Local Added Properties
+
+          const localData =
+            JSON.parse(
+              localStorage.getItem("properties")
+            ) || [];
+
+          // Merge API + Local Properties
+
+          const mergedProperties = [
+  ...apiData,
+  ...localData.filter(
+    (localProperty) =>
+      !apiData.some(
+        (apiProperty) =>
+          apiProperty.id === localProperty.id
+      )
   )
+];
 
-  // Loading check
-  if (!property) {
-    return <h1>Loading...</h1>
-  }
+          setProperties(
+            mergedProperties
+          );
+
+          setLoading(false);
+
+        })
+
+        .catch(() => {
+
+          setError(
+            "Failed to load properties"
+          );
+
+          setLoading(false);
+
+        });
+
+    }, 3000);
+
+  }, []);
+
 
   return (
 
-    <div className='properties'>
+    <div>
 
-      <img
-        src={property.image}
-        alt={property.title}
-        width="300"
-      />
+      {/* Skeleton Loader */}
 
-      <h1>{property.title}</h1>
+      {loading ? (
 
-      <h2>{property.price}</h2>
+        <div className="skeleton-container">
 
-      <p>{property.location}</p>
+          <div className="skeleton-card"></div>
 
-      <p>
-        {property.beds} Bedrooms
-      </p>
+          <div className="skeleton-card"></div>
 
-      <p>
-        {property.baths} Bathrooms
-      </p>
+          <div className="skeleton-card"></div>
 
-      <p>{property.description}</p>
+        </div>
+
+      ) : error ? (
+
+        /* Error State */
+
+        <div className="error-box">
+
+          <h2>
+            ⚠ {error}
+          </h2>
+
+          <p>
+            Please try again later
+          </p>
+
+        </div>
+
+      ) : (
+
+        <div className="property-grid">
+
+          {/* No Properties Found */}
+
+          {properties.length === 0 ? (
+
+            <div className="no-properties">
+
+              <h2>
+                No properties found
+              </h2>
+
+              <p>
+                Add a property to see it here
+              </p>
+
+            </div>
+
+          ) : (
+
+            properties.map((property) => (
+
+              <Propertycard
+                key={property.id}
+                property={property}
+                handleSave={handleSave}
+                
+                isSaved={savedProperties.some(
+  (p) => p.id === property.id
+)}
+              />
+
+            ))
+
+          )}
+
+        </div>
+
+      )}
 
     </div>
 
-  )
+  );
+
 }
 
-export default Properties
+export default Properties;

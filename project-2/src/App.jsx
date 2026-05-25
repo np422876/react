@@ -1,39 +1,21 @@
-import React, {
-  useState,
-  useEffect,
-  useContext
-} from "react";
-
-import {
-  BrowserRouter,
-  Routes,
-  Route
-} from "react-router-dom";
-
-import { PropertyContext }
-from "./context/PropertyContext";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Properties from "./pages/Properties";
 import About from "./pages/About";
-import Saved from "./pages/Saved";
+import Save from "./components/Save";
 import PropertyDetails from "./pages/PropertyDetails";
 
 import Navbar from "./components/Navbar";
 import Propertycard from "./components/Propertycard";
+import Propertymodal from "./components/Propertymodal";
 
 import "./App.css";
 import "./components/Navbar.css";
 import "./components/Save.css";
 
 function App() {
-
-  const {
-    properties,
-    setProperties,
-    savedProperties,
-    setSavedProperties
-  } = useContext(PropertyContext);
 
   const [loading, setLoading] =
     useState(true);
@@ -50,6 +32,17 @@ function App() {
   const [maxPrice, setMaxPrice] =
     useState("");
 
+  const [properties, setProperties] =
+    useState([]);
+
+  const [savedProperties, setSavedProperties] =
+    useState([]);
+
+  const [selectedProperty, setSelectedProperty] =
+    useState(null);
+
+  // Save / Unsave Property
+
   const handleSave = (property) => {
 
     const alreadySaved =
@@ -58,133 +51,148 @@ function App() {
           item.id === property.id
       );
 
+    let updatedSaved;
+
     if (alreadySaved) {
 
-      setSavedProperties(
-
+      updatedSaved =
         savedProperties.filter(
           (item) =>
             item.id !== property.id
-        )
-
-      );
+        );
 
     } else {
 
-      setSavedProperties([
+      updatedSaved = [
         ...savedProperties,
         property
-      ]);
+      ];
 
     }
 
+    setSavedProperties(updatedSaved);
+
+    // Save in localStorage
+
+    localStorage.setItem(
+      "savedProperties",
+      JSON.stringify(updatedSaved)
+    );
+
   };
+
+  // Search
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
   };
 
-  useEffect(() => {
-
-    localStorage.setItem(
-      "savedProperties",
-      JSON.stringify(savedProperties)
-    );
-
-  }, [savedProperties]);
-
   // Fetch Properties
+
   useEffect(() => {
 
-    fetch(
-      "https://6a0417582afe8349b4b5d8e5.mockapi.io/api/properties"
-    )
+    // Load Saved Properties
 
-      .then((response) => {
+    const savedData =
+      JSON.parse(
+        localStorage.getItem(
+          "savedProperties"
+        )
+      ) || [];
 
-        if (!response.ok) {
-          throw new Error(
-            "Failed to fetch properties"
-          );
-        }
+    setSavedProperties(savedData);
 
-        return response.json();
+    setLoading(true);
 
-      })
+    setTimeout(() => {
 
-      .then((data) => {
+      fetch(
+        "https://6a0417582afe8349b4b5d8e5.mockapi.io/api/properties"
+      )
 
-const storedProperties =
-  JSON.parse(
-    localStorage.getItem("properties")
-  );
+        .then((res) => res.json())
 
-if (storedProperties) {
+        .then((apiData) => {
 
-  setProperties(storedProperties);
+          // Local Added Properties
 
-} else {
+          const localData =
+            JSON.parse(
+              localStorage.getItem(
+                "properties"
+              )
+            ) || [];
 
-  setProperties(data);
+          // Merge API + Local Properties
 
-}
-        const storedSaved =
-          JSON.parse(
-            localStorage.getItem("savedProperties"
+          const mergedProperties = [
+
+            ...apiData,
+
+            ...localData.filter(
+              (localProperty) =>
+
+                !apiData.some(
+                  (apiProperty) =>
+
+                    apiProperty.id ===
+                    localProperty.id
+                )
             )
-          ) || [];
 
-        setSavedProperties(storedSaved);
+          ];
 
-        setLoading(false);
+          setProperties(
+            mergedProperties
+          );
 
-      })
+          setLoading(false);
 
-      .catch((err) => {
+        })
 
-        setError(err.message);
-        setLoading(false);
+        .catch(() => {
 
-      });
+          setError(
+            "Failed to load properties"
+          );
+
+          setLoading(false);
+
+        });
+
+    }, 3000);
 
   }, []);
 
   // Filters
+
   const filteredProperties =
     properties.filter((property) => {
 
-      const matchesSearch =
+      return (
+
         property.title
           ?.toLowerCase()
           .includes(
             search.toLowerCase()
-          );
+          ) &&
 
-      const matchesType =
+        (
+          typeFilter === "" ||
 
-        typeFilter === "" ||
+          property.type
+            ?.toLowerCase() ===
+          typeFilter.toLowerCase()
+        ) &&
 
-        property.type
-          ?.toLowerCase()
-          ===
-        typeFilter.toLowerCase();
+        (
+          maxPrice === "" ||
 
-      const matchesPrice =
-
-        maxPrice === "" ||
-
-        Number(
-          String(property.price)
-            .replace(/[^0-9]/g, "")
+          Number(
+            String(property.price)
+              .replace(/[^0-9]/g, "")
+          ) <= Number(maxPrice)
         )
-
-        <= Number(maxPrice);
-
-      return (
-
-        matchesSearch &&
-        matchesType &&
-        matchesPrice
 
       );
 
@@ -195,6 +203,8 @@ if (storedProperties) {
     <BrowserRouter>
 
       <Navbar />
+
+      {/* Filters */}
 
       <div className="filters">
 
@@ -267,13 +277,29 @@ if (storedProperties) {
 
             loading ? (
 
-              <div className="loading">
-                <div className="spinner"></div>
+              <div className="skeleton-container">
+
+                <div className="skeleton-card"></div>
+
+                <div className="skeleton-card"></div>
+
+                <div className="skeleton-card"></div>
+
               </div>
 
             ) : error ? (
 
-              <h2>{error}</h2>
+              <div className="error-box">
+
+                <h2>
+                  ⚠ {error}
+                </h2>
+
+                <p>
+                  Please try again later
+                </p>
+
+              </div>
 
             ) : (
 
@@ -283,25 +309,41 @@ if (storedProperties) {
 
                 <div className="user">
 
-                  {filteredProperties.map(
-                    (property) => (
+                  {filteredProperties.length === 0 ? (
 
-                      <Propertycard
-                        key={property.id}
-                        property={property}
-                        handleSave={
-                          handleSave
-                        }
-                        isSaved={
-                          savedProperties.some(
+                    <div className="no-properties">
+
+                      <h2>
+                        No properties found
+                      </h2>
+
+                      <p>
+                        Try changing your filters
+                      </p>
+
+                    </div>
+
+                  ) : (
+
+                    filteredProperties.map(
+                      (property) => (
+
+                        <Propertycard
+                          key={property.id}
+                          property={property}
+                          handleSave={handleSave}
+                          onCardClick={
+                            setSelectedProperty
+                          }
+                          isSaved={savedProperties.some(
                             (item) =>
-                              item.id ===
-                              property.id
-                          )
-                        }
-                      />
+                              item.id === property.id
+                          )}
+                        />
 
+                      )
                     )
+
                   )}
 
                 </div>
@@ -315,14 +357,19 @@ if (storedProperties) {
 
         <Route
           path="/properties/:id"
-          element={
-            <PropertyDetails />
-          }
+          element={<PropertyDetails />}
         />
 
         <Route
           path="/properties"
-          element={<Properties />}
+          element={
+            <Properties
+              savedProperties={
+                savedProperties
+              }
+              handleSave={handleSave}
+            />
+          }
         />
 
         <Route
@@ -333,18 +380,25 @@ if (storedProperties) {
         <Route
           path="/saved"
           element={
-            <Saved
+            <Save
               savedProperties={
                 savedProperties
               }
-              handleSave={
-                handleSave
-              }
+              handleSave={handleSave}
             />
           }
         />
 
       </Routes>
+
+      {/* Modal */}
+
+      <Propertymodal
+        property={selectedProperty}
+        onClose={() =>
+          setSelectedProperty(null)
+        }
+      />
 
     </BrowserRouter>
 
