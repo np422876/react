@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import {
+  BrowserRouter,
+  Routes,
+  Route
+} from "react-router-dom";
 
 import Home from "./pages/Home";
 import Properties from "./pages/Properties";
 import About from "./pages/About";
 import Save from "./components/Save";
 import PropertyDetails from "./pages/PropertyDetails";
+
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 import Navbar from "./components/Navbar";
 import Propertycard from "./components/Propertycard";
@@ -17,14 +25,22 @@ import "./components/Save.css";
 
 function App() {
 
+  // Loading State
+
   const [loading, setLoading] =
     useState(true);
+
+  // Error State
 
   const [error, setError] =
     useState("");
 
+  // Search State
+
   const [search, setSearch] =
     useState("");
+
+  // Filters
 
   const [typeFilter, setTypeFilter] =
     useState("");
@@ -32,14 +48,28 @@ function App() {
   const [maxPrice, setMaxPrice] =
     useState("");
 
+  // Properties
+
   const [properties, setProperties] =
     useState([]);
 
-  const [savedProperties, setSavedProperties] =
+  // Saved Properties
+
+  const [savedProperties,
+    setSavedProperties] =
     useState([]);
 
-  const [selectedProperty, setSelectedProperty] =
+  // Modal
+
+  const [selectedProperty,
+    setSelectedProperty] =
     useState(null);
+
+  // Login State
+
+  const [isLoggedIn,
+    setIsLoggedIn] =
+    useState(false);
 
   // Save / Unsave Property
 
@@ -72,8 +102,6 @@ function App() {
 
     setSavedProperties(updatedSaved);
 
-    // Save in localStorage
-
     localStorage.setItem(
       "savedProperties",
       JSON.stringify(updatedSaved)
@@ -91,7 +119,18 @@ function App() {
 
   useEffect(() => {
 
-    // Load Saved Properties
+    // Login Status
+
+    const loginStatus =
+      localStorage.getItem(
+        "isLoggedIn"
+      );
+
+    if (loginStatus === "true") {
+      setIsLoggedIn(true);
+    }
+
+    // Saved Properties
 
     const savedData =
       JSON.parse(
@@ -123,7 +162,7 @@ function App() {
               )
             ) || [];
 
-          // Merge API + Local Properties
+          // Merge API + Local
 
           const mergedProperties = [
 
@@ -164,7 +203,7 @@ function App() {
 
   }, []);
 
-  // Filters
+  // Filtered Properties
 
   const filteredProperties =
     properties.filter((property) => {
@@ -202,203 +241,249 @@ function App() {
 
     <BrowserRouter>
 
-      <Navbar />
+      {!isLoggedIn ? (
 
-      {/* Filters */}
+        // AUTH PAGES
 
-      <div className="filters">
+        <Routes>
 
-        <input
-          type="text"
-          placeholder="Search by title"
-          value={search}
-          className="searchbox"
-          onChange={handleSearch}
-        />
+          <Route
+            path="/"
+            element={
+              <Login
+                setIsLoggedIn={
+                  setIsLoggedIn
+                }
+              />
+            }
+          />
 
-        <select
-          value={typeFilter}
-          onChange={(e) =>
-            setTypeFilter(
-              e.target.value
-            )
-          }
-        >
+          <Route
+            path="/signup"
+            element={
+              <Signup
+                setIsLoggedIn={
+                  setIsLoggedIn
+                }
+              />
+            }
+          />
 
-          <option value="">
-            All Types
-          </option>
+        </Routes>
 
-          <option value="Apartment">
-            Apartment
-          </option>
+      ) : (
 
-          <option value="Bunglow">
-            Bunglow
-          </option>
+        // WEBSITE
 
-          <option value="Studio">
-            Studio
-          </option>
+        <>
 
-          <option value="Villa">
-            Villa
-          </option>
+          <Navbar />
 
-          <option value="Mansion">
-            Mansion
-          </option>
+          {/* Filters */}
 
-          <option value="Flat">
-            Flat
-          </option>
+          <div className="filters">
 
-        </select>
+            <input
+              type="text"
+              placeholder="Search by title"
+              value={search}
+              className="searchbox"
+              onChange={handleSearch}
+            />
 
-        <input
-          type="number"
-          placeholder="Max Price"
-          min={0}
-          value={maxPrice}
-          onChange={(e) =>
-            setMaxPrice(
-              e.target.value
-            )
-          }
-        />
+            <select
+              value={typeFilter}
+              onChange={(e) =>
+                setTypeFilter(
+                  e.target.value
+                )
+              }
+            >
 
-      </div>
+              <option value="">
+                All Types
+              </option>
 
-      <Routes>
+              <option value="Apartment">
+                Apartment
+              </option>
 
-        <Route
-          path="/"
-          element={
+              <option value="Bunglow">
+                Bunglow
+              </option>
 
-            loading ? (
+              <option value="Studio">
+                Studio
+              </option>
 
-              <div className="skeleton-container">
+              <option value="Villa">
+                Villa
+              </option>
 
-                <div className="skeleton-card"></div>
+              <option value="Mansion">
+                Mansion
+              </option>
 
-                <div className="skeleton-card"></div>
+              <option value="Flat">
+                Flat
+              </option>
 
-                <div className="skeleton-card"></div>
+            </select>
 
-              </div>
+            <input
+              type="number"
+              placeholder="Max Price"
+              min={0}
+              value={maxPrice}
+              onChange={(e) =>
+                setMaxPrice(
+                  e.target.value
+                )
+              }
+            />
 
-            ) : error ? (
+          </div>
 
-              <div className="error-box">
+          <Routes>
 
-                <h2>
-                  ⚠ {error}
-                </h2>
+            <Route
+              path="/"
+              element={
 
-                <p>
-                  Please try again later
-                </p>
+                loading ? (
 
-              </div>
+                  // Skeleton Loader
 
-            ) : (
+                  <div className="skeleton-container">
 
-              <div>
+                    <div className="skeleton-card"></div>
 
-                <Home />
+                    <div className="skeleton-card"></div>
 
-                <div className="user">
+                    <div className="skeleton-card"></div>
 
-                  {filteredProperties.length === 0 ? (
+                  </div>
 
-                    <div className="no-properties">
+                ) : error ? (
 
-                      <h2>
-                        No properties found
-                      </h2>
+                  // Error State
 
-                      <p>
-                        Try changing your filters
-                      </p>
+                  <div className="error-box">
+
+                    <h2>
+                      ⚠ {error}
+                    </h2>
+
+                    <p>
+                      Please try again later
+                    </p>
+
+                  </div>
+
+                ) : (
+
+                  <div>
+
+                    <Home />
+
+                    <div className="user">
+
+                      {filteredProperties.length === 0 ? (
+
+                        <div className="no-properties">
+
+                          <h2>
+                            No properties found
+                          </h2>
+
+                          <p>
+                            Try changing your filters
+                          </p>
+
+                        </div>
+
+                      ) : (
+
+                        filteredProperties.map(
+                          (property) => (
+
+                            <Propertycard
+                              key={property.id}
+                              property={property}
+                              handleSave={handleSave}
+                              onCardClick={
+                                setSelectedProperty
+                              }
+                              isSaved={savedProperties.some(
+                                (item) =>
+                                  item.id === property.id
+                              )}
+                            />
+
+                          )
+                        )
+
+                      )}
 
                     </div>
 
-                  ) : (
+                  </div>
 
-                    filteredProperties.map(
-                      (property) => (
+                )
 
-                        <Propertycard
-                          key={property.id}
-                          property={property}
-                          handleSave={handleSave}
-                          onCardClick={
-                            setSelectedProperty
-                          }
-                          isSaved={savedProperties.some(
-                            (item) =>
-                              item.id === property.id
-                          )}
-                        />
-
-                      )
-                    )
-
-                  )}
-
-                </div>
-
-              </div>
-
-            )
-
-          }
-        />
-
-        <Route
-          path="/properties/:id"
-          element={<PropertyDetails />}
-        />
-
-        <Route
-          path="/properties"
-          element={
-            <Properties
-              savedProperties={
-                savedProperties
               }
-              handleSave={handleSave}
             />
-          }
-        />
 
-        <Route
-          path="/about"
-          element={<About />}
-        />
-
-        <Route
-          path="/saved"
-          element={
-            <Save
-              savedProperties={
-                savedProperties
+            <Route
+              path="/properties/:id"
+              element={
+                <PropertyDetails />
               }
-              handleSave={handleSave}
             />
-          }
-        />
 
-      </Routes>
+            <Route
+              path="/properties"
+              element={
+                <Properties
+                  savedProperties={
+                    savedProperties
+                  }
+                  handleSave={handleSave}
+                />
+              }
+            />
 
-      {/* Modal */}
+            <Route
+              path="/about"
+              element={<About />}
+            />
 
-      <Propertymodal
-        property={selectedProperty}
-        onClose={() =>
-          setSelectedProperty(null)
-        }
-      />
+            <Route
+              path="/saved"
+              element={
+                <Save
+                  savedProperties={
+                    savedProperties
+                  }
+                  handleSave={handleSave}
+                />
+              }
+            />
+
+          </Routes>
+
+          {/* Modal */}
+
+          <Propertymodal
+            property={selectedProperty}
+            onClose={() =>
+              setSelectedProperty(null)
+            }
+          />
+
+        </>
+
+      )}
 
     </BrowserRouter>
 

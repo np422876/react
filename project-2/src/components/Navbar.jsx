@@ -14,6 +14,19 @@ function Navbar({children}) {
         <Link to="/properties">Properties</Link>
         <Link to="/about">About</Link>
         <Link to="/saved">Saved</Link>
+        <button
+  onClick={() => {
+
+    localStorage.removeItem(
+      "isLoggedIn"
+    );
+
+    window.location.reload();
+
+  }}
+>
+  Logout
+</button>
         </div>
         {children}
     </div>
