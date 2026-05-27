@@ -88,3 +88,35 @@
   }
 
 }
+
+.show-btn {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #eee;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.show-btn:hover {
+  background: #ddd;
+}
+
+.show-password {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: -10px;
+  font-size: 14px;
+}
+
+.show-password input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.show-password label {
+  cursor: pointer;
+  color: #333;
+}

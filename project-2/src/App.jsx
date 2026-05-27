@@ -14,6 +14,7 @@ import PropertyDetails from "./pages/PropertyDetails";
 
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Addprop from "./components/Addprop";
 
 import Navbar from "./components/Navbar";
 import Propertycard from "./components/Propertycard";
@@ -119,6 +120,27 @@ function App() {
 
   useEffect(() => {
 
+  fetch(`${import.meta.env.VITE_API_URL}/api/properties`)
+    .then((res) => res.json())
+    .then((data) => {
+
+      setProperties(data);
+
+      setLoading(false);
+
+    })
+
+    .catch(() => {
+
+      setError("Failed to load properties");
+
+      setLoading(false);
+
+    });
+
+}, []);
+  useEffect(() => {
+
     // Login Status
 
     const loginStatus =
@@ -143,63 +165,7 @@ function App() {
 
     setLoading(true);
 
-    setTimeout(() => {
-
-      fetch(
-        "https://6a0417582afe8349b4b5d8e5.mockapi.io/api/properties"
-      )
-
-        .then((res) => res.json())
-
-        .then((apiData) => {
-
-          // Local Added Properties
-
-          const localData =
-            JSON.parse(
-              localStorage.getItem(
-                "properties"
-              )
-            ) || [];
-
-          // Merge API + Local
-
-          const mergedProperties = [
-
-            ...apiData,
-
-            ...localData.filter(
-              (localProperty) =>
-
-                !apiData.some(
-                  (apiProperty) =>
-
-                    apiProperty.id ===
-                    localProperty.id
-                )
-            )
-
-          ];
-
-          setProperties(
-            mergedProperties
-          );
-
-          setLoading(false);
-
-        })
-
-        .catch(() => {
-
-          setError(
-            "Failed to load properties"
-          );
-
-          setLoading(false);
-
-        });
-
-    }, 3000);
+    
 
   }, []);
 
@@ -469,6 +435,19 @@ function App() {
                 />
               }
             />
+
+            <Route
+  path="/add-property"
+  element={
+    isLoggedIn
+      ? <Addprop />
+      : <Login
+          setIsLoggedIn={
+            setIsLoggedIn
+          }
+        />
+  }
+/>
 
           </Routes>
 
