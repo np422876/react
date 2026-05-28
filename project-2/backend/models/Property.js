@@ -17,12 +17,12 @@ const PropertySchema = new mongoose.Schema({
     required: true
   },
 
-  bedrooms: {
+  beds: {
     type: Number,
     required: true
   },
 
-  bathrooms: {
+  baths: {
     type: Number,
     required: true
   },

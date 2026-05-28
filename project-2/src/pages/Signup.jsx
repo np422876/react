@@ -11,8 +11,8 @@ function Signup({
   const [email, setEmail] =
     useState("");
 
-    const [name, setName] =
-  useState("");
+  const [name, setName] =
+    useState("");
 
   const [password, setPassword] =
     useState("");
@@ -47,13 +47,17 @@ function Signup({
 
       setStrength("Weak");
 
-    } else if (
+    }
+
+    else if (
       strongPassword.test(value)
     ) {
 
       setStrength("Strong");
 
-    } else {
+    }
+
+    else {
 
       setStrength("Medium");
 
@@ -77,13 +81,14 @@ function Signup({
 
   // Form Submit
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
 
     e.preventDefault();
 
     // Empty Fields Check
 
     if (
+      !name ||
       !email ||
       !password ||
       !confirmPassword
@@ -111,17 +116,17 @@ function Signup({
 
     }
 
-    // Strong Password Validation
+    // Password Validation
 
     if (password.length < 6) {
 
-  setError(
-    "Password must be at least 6 characters"
-  );
+      setError(
+        "Password must be at least 6 characters"
+      );
 
-  return;
+      return;
 
-}
+    }
 
     // Confirm Password Check
 
@@ -142,35 +147,86 @@ function Signup({
 
     setError("");
 
-    // Save User Data
+    try {
 
-    localStorage.setItem(
-  "userName",
-  name
-);
+      const response = await fetch(
 
-    localStorage.setItem(
-      "userEmail",
-      email
-    );
+        "http://localhost:8000/api/auth/register",
 
-    localStorage.setItem(
-      "userPassword",
-      password
-    );
+        {
 
-    // Login User
+          method: "POST",
 
-    localStorage.setItem(
-      "isLoggedIn",
-      "true"
-    );
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
 
-    setIsLoggedIn(true);
+          body: JSON.stringify({
 
-    // Redirect Home
+            name,
 
-    window.location.href = "/";
+            email,
+
+            password
+
+          })
+
+        }
+
+      );
+
+      const data =
+        await response.json();
+
+      if (response.ok) {
+
+        // Save Login State
+
+        localStorage.setItem(
+          "isLoggedIn",
+          "true"
+        );
+
+        localStorage.setItem(
+          "userName",
+          name
+        );
+
+        localStorage.setItem(
+          "userEmail",
+          email
+        );
+
+        // Login User
+
+        setIsLoggedIn(true);
+
+        // Redirect Home
+
+        window.location.href = "/";
+
+      }
+
+      else {
+
+        setError(
+          data.message
+        );
+
+      }
+
+    }
+
+    catch (error) {
+
+      console.log(error);
+
+      setError(
+        "Something went wrong"
+      );
+
+    }
 
   };
 
@@ -197,16 +253,18 @@ function Signup({
 
         )}
 
+        {/* Name */}
+
         <input
-  type="text"
-  placeholder="Full Name"
-  value={name}
-  onChange={(e) =>
-    setName(
-      e.target.value
-    )
-  }
-/>
+          type="text"
+          placeholder="Full Name"
+          value={name}
+          onChange={(e) =>
+            setName(
+              e.target.value
+            )
+          }
+        />
 
         {/* Email */}
 
@@ -234,26 +292,28 @@ function Signup({
           onChange={handlePassword}
         />
 
-        {/* Show Password Button */}
+        {/* Show Password */}
 
         <div className="show-password">
 
-  <input
-    type="checkbox"
-    id="showPassword"
-    checked={showPassword}
-    onChange={() =>
-      setShowPassword(
-        !showPassword
-      )
-    }
-  />
+          <input
+            type="checkbox"
+            id="showPassword"
+            checked={showPassword}
+            onChange={() =>
+              setShowPassword(
+                !showPassword
+              )
+            }
+          />
 
-  <label htmlFor="showPassword">
-    Show Password
-  </label>
+          <label htmlFor="showPassword">
 
-</div>
+            Show Password
+
+          </label>
+
+        </div>
 
         {/* Password Strength */}
 

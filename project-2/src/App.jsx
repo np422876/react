@@ -79,7 +79,7 @@ function App() {
     const alreadySaved =
       savedProperties.find(
         (item) =>
-          item.id === property.id
+          item._id === property._id
       );
 
     let updatedSaved;
@@ -89,7 +89,7 @@ function App() {
       updatedSaved =
         savedProperties.filter(
           (item) =>
-            item.id !== property.id
+            item._id !== property._id
         );
 
     } else {
@@ -374,7 +374,7 @@ function App() {
                           (property) => (
 
                             <Propertycard
-                              key={property.id}
+                              key={property._id}
                               property={property}
                               handleSave={handleSave}
                               onCardClick={
@@ -382,7 +382,7 @@ function App() {
                               }
                               isSaved={savedProperties.some(
                                 (item) =>
-                                  item.id === property.id
+                                  item._id === property._id
                               )}
                             />
 
