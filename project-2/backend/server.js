@@ -337,6 +337,120 @@ app.post(
 
       }
 
+      // Toggle Favorite
+
+app.post(
+
+  "/api/user/favorite/:propertyId",
+
+  authMiddleware,
+
+  async (req, res) => {
+
+    try {
+
+      const user =
+        await User.findById(
+          req.user.id
+        );
+
+      const propertyId =
+        req.params.propertyId;
+
+      const alreadySaved =
+        user.favorites.includes(
+          propertyId
+        );
+
+      if (alreadySaved) {
+
+        user.favorites =
+          user.favorites.filter(
+
+            (id) =>
+
+              id.toString() !==
+              propertyId
+
+          );
+
+      }
+
+      else {
+
+        user.favorites.push(
+          propertyId
+        );
+
+      }
+
+      await user.save();
+
+      res.json({
+
+        message:
+          "Favorites updated",
+
+        favorites:
+          user.favorites
+
+      });
+
+    }
+
+    catch (error) {
+
+      res.status(500).json({
+
+        message:
+          error.message
+
+      });
+
+    }
+
+  }
+
+);
+
+// Get Favorites
+
+app.get(
+
+  "/api/user/favorites",
+
+  authMiddleware,
+
+  async (req, res) => {
+
+    try {
+
+      const user =
+        await User.findById(
+          req.user.id
+        ).populate("favorites");
+
+      res.json(
+        user.favorites
+      );
+
+    }
+
+    catch (error) {
+
+      res.status(500).json({
+
+        message:
+          error.message
+
+      });
+
+    }
+
+  }
+
+);
+
       // Compare Password
 
       const isMatch =
@@ -382,12 +496,20 @@ app.post(
 
       res.json({
 
-        message:
-          "Login successful",
+  message:
+    "Login successful",
 
-        token
+  token,
 
-      });
+  user: {
+
+    name: user.name,
+
+    email: user.email
+
+  }
+
+});
 
     }
 

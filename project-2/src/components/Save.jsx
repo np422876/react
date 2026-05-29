@@ -1,43 +1,160 @@
-import React from "react";
+import React,
+{
+  useEffect,
+  useState
+} from "react";
 
 import Propertycard
-from "../components/Propertycard";
+from "./Propertycard";
 
-function Save({
-  savedProperties,
-  handleSave
-}) {
+function Save() {
+
+  const [favorites,
+    setFavorites] =
+    useState([]);
+
+  useEffect(() => {
+
+    fetchFavorites();
+
+  }, []);
+
+  const fetchFavorites =
+    async () => {
+
+      try {
+
+        const token =
+
+          localStorage.getItem(
+            "token"
+          );
+
+        const response =
+          await fetch(
+
+            "http://localhost:8000/api/user/favorites",
+
+            {
+
+              headers: {
+
+                Authorization:
+                  `Bearer ${token}`
+
+              }
+
+            }
+
+          );
+
+        const data =
+          await response.json();
+
+        setFavorites(data);
+
+      }
+
+      catch (error) {
+
+        console.log(error);
+
+      }
+
+    };
+
+  const handleSave =
+    async (propertyId) => {
+
+      try {
+
+        const token =
+
+          localStorage.getItem(
+            "token"
+          );
+
+        await fetch(
+
+          `http://localhost:8000/api/user/favorite/${propertyId}`,
+
+          {
+
+            method: "POST",
+
+            headers: {
+
+              Authorization:
+                `Bearer ${token}`
+
+            }
+
+          }
+
+        );
+
+        fetchFavorites();
+
+      }
+
+      catch (error) {
+
+        console.log(error);
+
+      }
+
+    };
 
   return (
 
-    <div className="user">
+    <div className="saved-page">
 
-      {savedProperties.length === 0 ? (
+      
 
-        <h2>
-          No Saved Properties
-        </h2>
+      
 
-      ) : (
+        {favorites.length === 0 ? (
 
-        savedProperties.map(
-          (property) => (
+         <div className="save">
+          <h2 >
+            No Saved Properties
+          </h2>
+          <h4>Save Properties to see them here</h4>
+          </div>
 
-            <Propertycard
-              key={property.id}
-              property={property}
-              handleSave={
-                handleSave
-              }
-              isSaved={true}
-            />
+        ) : (
+
+          favorites.map(
+
+            (property) => (
+
+              <Propertycard
+
+                key={property._id}
+
+                property={property}
+
+                handleSave={() =>
+
+                  handleSave(
+                    property.id
+                  )
+
+                }
+
+                isSaved={true}
+
+              />
+
+            )
 
           )
-        )
 
-      )}
+        )}
 
-    </div>
+      </div>
+
+   
 
   );
 

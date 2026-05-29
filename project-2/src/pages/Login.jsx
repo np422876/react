@@ -68,6 +68,10 @@ function Login({
       await response.json();
 
     if (response.ok) {
+      localStorage.setItem(
+  "userName",
+  data.user.name
+);
 
       // Save JWT Token
 

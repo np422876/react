@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, {
+  useState,
+  useEffect
+} from "react";
 
 import {
   BrowserRouter,
@@ -54,7 +57,7 @@ function App() {
   const [properties, setProperties] =
     useState([]);
 
-  // Saved Properties
+  // Favorites
 
   const [savedProperties,
     setSavedProperties] =
@@ -72,76 +75,43 @@ function App() {
     setIsLoggedIn] =
     useState(false);
 
-  // Save / Unsave Property
+  // =========================
+  // FETCH PROPERTIES
+  // =========================
 
-  const handleSave = (property) => {
+  useEffect(() => {
 
-    const alreadySaved =
-      savedProperties.find(
-        (item) =>
-          item._id === property._id
-      );
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/properties`
+    )
 
-    let updatedSaved;
+      .then((res) => res.json())
 
-    if (alreadySaved) {
+      .then((data) => {
 
-      updatedSaved =
-        savedProperties.filter(
-          (item) =>
-            item._id !== property._id
+        setProperties(data);
+
+        setLoading(false);
+
+      })
+
+      .catch(() => {
+
+        setError(
+          "Failed to load properties"
         );
 
-    } else {
+        setLoading(false);
 
-      updatedSaved = [
-        ...savedProperties,
-        property
-      ];
+      });
 
-    }
+  }, []);
 
-    setSavedProperties(updatedSaved);
-
-    localStorage.setItem(
-      "savedProperties",
-      JSON.stringify(updatedSaved)
-    );
-
-  };
-
-  // Search
-
-  const handleSearch = (e) => {
-    setSearch(e.target.value);
-  };
-
-  // Fetch Properties
+  // =========================
+  // LOGIN CHECK
+  // =========================
 
   useEffect(() => {
-
-  fetch(`${import.meta.env.VITE_API_URL}/api/properties`)
-    .then((res) => res.json())
-    .then((data) => {
-
-      setProperties(data);
-
-      setLoading(false);
-
-    })
-
-    .catch(() => {
-
-      setError("Failed to load properties");
-
-      setLoading(false);
-
-    });
-
-}, []);
-  useEffect(() => {
-
-    // Login Status
 
     const loginStatus =
       localStorage.getItem(
@@ -149,27 +119,151 @@ function App() {
       );
 
     if (loginStatus === "true") {
+
       setIsLoggedIn(true);
+
     }
-
-    // Saved Properties
-
-    const savedData =
-      JSON.parse(
-        localStorage.getItem(
-          "savedProperties"
-        )
-      ) || [];
-
-    setSavedProperties(savedData);
-
-    setLoading(true);
-
-    
 
   }, []);
 
-  // Filtered Properties
+  // =========================
+  // FETCH FAVORITES
+  // =========================
+
+  useEffect(() => {
+
+    const fetchFavorites =
+      async () => {
+
+        try {
+
+          const token =
+            localStorage.getItem(
+              "token"
+            );
+
+          if (!token) return;
+
+          const response =
+            await fetch(
+
+              "http://localhost:8000/api/user/favorites",
+
+              {
+
+                headers: {
+
+                  Authorization:
+                    `Bearer ${token}`
+
+                }
+
+              }
+
+            );
+
+          const data =
+            await response.json();
+
+          setSavedProperties(data);
+
+        }
+
+        catch (error) {
+
+          console.log(error);
+
+        }
+
+      };
+
+    fetchFavorites();
+
+  }, []);
+
+  // =========================
+  // SAVE / UNSAVE PROPERTY
+  // =========================
+
+  const handleSave =
+    async (property) => {
+
+      try {
+
+        const token =
+          localStorage.getItem(
+            "token"
+          );
+
+        await fetch(
+
+          `http://localhost:8000/api/user/favorite/${property._id}`,
+
+          {
+
+            method: "POST",
+
+            headers: {
+
+              Authorization:
+                `Bearer ${token}`
+
+            }
+
+          }
+
+        );
+
+        // Reload favorites
+
+        const response =
+          await fetch(
+
+            "http://localhost:8000/api/user/favorites",
+
+            {
+
+              headers: {
+
+                Authorization:
+                  `Bearer ${token}`
+
+              }
+
+            }
+
+          );
+
+        const data =
+          await response.json();
+
+        setSavedProperties(data);
+
+      }
+
+      catch (error) {
+
+        console.log(error);
+
+      }
+
+    };
+
+  // =========================
+  // SEARCH
+  // =========================
+
+  const handleSearch = (e) => {
+
+    setSearch(
+      e.target.value
+    );
+
+  };
+
+  // =========================
+  // FILTERED PROPERTIES
+  // =========================
 
   const filteredProperties =
     properties.filter((property) => {
@@ -180,23 +274,44 @@ function App() {
           ?.toLowerCase()
           .includes(
             search.toLowerCase()
-          ) &&
+          )
+
+        &&
 
         (
-          typeFilter === "" ||
+
+          typeFilter === ""
+
+          ||
 
           property.type
-            ?.toLowerCase() ===
+            ?.toLowerCase()
+
+          ===
+
           typeFilter.toLowerCase()
-        ) &&
+
+        )
+
+        &&
 
         (
-          maxPrice === "" ||
+
+          maxPrice === ""
+
+          ||
 
           Number(
+
             String(property.price)
               .replace(/[^0-9]/g, "")
-          ) <= Number(maxPrice)
+
+          )
+
+          <=
+
+          Number(maxPrice)
+
         )
 
       );
@@ -209,61 +324,86 @@ function App() {
 
       {!isLoggedIn ? (
 
+        // =========================
         // AUTH PAGES
+        // =========================
 
         <Routes>
 
           <Route
+
             path="/"
+
             element={
+
               <Login
                 setIsLoggedIn={
                   setIsLoggedIn
                 }
               />
+
             }
+
           />
 
           <Route
+
             path="/signup"
+
             element={
+
               <Signup
                 setIsLoggedIn={
                   setIsLoggedIn
                 }
               />
+
             }
+
           />
 
         </Routes>
 
       ) : (
 
+        // =========================
         // WEBSITE
+        // =========================
 
         <>
 
           <Navbar />
 
-          {/* Filters */}
+          {/* FILTERS */}
 
           <div className="filters">
 
             <input
+
               type="text"
+
               placeholder="Search by title"
+
               value={search}
+
               className="searchbox"
+
               onChange={handleSearch}
+
             />
 
             <select
+
               value={typeFilter}
+
               onChange={(e) =>
+
                 setTypeFilter(
                   e.target.value
                 )
+
               }
+
             >
 
               <option value="">
@@ -297,28 +437,38 @@ function App() {
             </select>
 
             <input
+
               type="number"
+
               placeholder="Max Price"
+
               min={0}
+
               value={maxPrice}
+
               onChange={(e) =>
+
                 setMaxPrice(
                   e.target.value
                 )
+
               }
+
             />
 
           </div>
 
           <Routes>
 
+            {/* HOME */}
+
             <Route
+
               path="/"
+
               element={
 
                 loading ? (
-
-                  // Skeleton Loader
 
                   <div className="skeleton-container">
 
@@ -331,8 +481,6 @@ function App() {
                   </div>
 
                 ) : error ? (
-
-                  // Error State
 
                   <div className="error-box">
 
@@ -374,16 +522,26 @@ function App() {
                           (property) => (
 
                             <Propertycard
+
                               key={property._id}
+
                               property={property}
+
                               handleSave={handleSave}
+
                               onCardClick={
                                 setSelectedProperty
                               }
+
                               isSaved={savedProperties.some(
+
                                 (item) =>
-                                  item._id === property._id
+
+                                  item._id ===
+                                  property._id
+
                               )}
+
                             />
 
                           )
@@ -398,66 +556,95 @@ function App() {
                 )
 
               }
+
             />
 
+            {/* PROPERTY DETAILS */}
+
             <Route
+
               path="/properties/:id"
+
               element={
                 <PropertyDetails />
               }
+
             />
 
+            {/* PROPERTIES */}
+
             <Route
-              path="/properties/:id"
+
+              path="/properties"
+
               element={
+
                 <Properties
-                  savedProperties={
-                    savedProperties
+                  handleSave={
+                    handleSave
                   }
-                  handleSave={handleSave}
                 />
+
               }
+
             />
 
+            {/* ABOUT */}
+
             <Route
+
               path="/about"
+
               element={<About />}
+
             />
 
+            {/* SAVED */}
+
             <Route
+
               path="/saved"
-              element={
-                <Save
-                  savedProperties={
-                    savedProperties
-                  }
-                  handleSave={handleSave}
-                />
-              }
+
+              element={<Save />}
+
             />
 
+            {/* ADD PROPERTY */}
+
             <Route
-  path="/add-property"
-  element={
-    isLoggedIn
-      ? <Addprop />
-      : <Login
-          setIsLoggedIn={
-            setIsLoggedIn
-          }
-        />
-  }
-/>
+
+              path="/add-property"
+
+              element={
+
+                isLoggedIn
+
+                  ? <Addprop />
+
+                  : <Login
+                      setIsLoggedIn={
+                        setIsLoggedIn
+                      }
+                    />
+
+              }
+
+            />
 
           </Routes>
 
-          {/* Modal */}
+          {/* MODAL */}
 
           <Propertymodal
+
             property={selectedProperty}
+
             onClose={() =>
+
               setSelectedProperty(null)
+
             }
+
           />
 
         </>

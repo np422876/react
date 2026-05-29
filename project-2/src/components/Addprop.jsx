@@ -1,178 +1,216 @@
-import React, { useState, useContext } from "react";
+import React,{useState,useContext} from "react";
+
 import "./Addprop.css";
-import { PropertyContext } from "../context/PropertyContext";
+
+import {PropertyContext} from "../context/PropertyContext";
 
 function Addprop() {
 
-  const { properties, setProperties } =
-    useContext(PropertyContext);
+  const {properties,setProperties} = useContext(PropertyContext);
 
-  const [showForm, setShowForm] =
-    useState(false);
+  const [showForm,setShowForm] =useState(false);
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading,setLoading] =useState(false);
 
-  const [error, setError] =
-    useState("");
+  const [error,setError] =useState("");
 
-  const [title, setTitle] =
-    useState("");
+  const [title,setTitle] =useState("");
 
-  const [price, setPrice] =
-    useState("");
+  const [price,setPrice] =useState("");
 
-  const [location, setLocation] =
-    useState("");
+  const [location,setLocation] =useState("");
 
-  const [beds, setBeds] =
-    useState("");
+  const [beds,setBeds] =useState("");
 
-  const [baths, setBaths] =
-    useState("");
+  const [baths,setBaths] =useState("");
 
-  const [image, setImage] =
-    useState("");
+  const [image,setImage] =useState("");
 
-  const [description, setDescription] =
-    useState("");
+  const [description,setDescription] =useState("");
 
-  const [type, setType] =
-    useState("");
+  const [type,setType] =useState("");
 
-    const token =
-  localStorage.getItem(
-    "token"
-  );
+  // Submit Form
 
-  const newProperty = {
+  const handleSubmit =
+    async (e) => {
 
-  title,
+      e.preventDefault();
 
-  price,
+      // Validation
 
-  location,
+      if (
 
-  beds,
+        !title ||
 
-  baths,
+        !price ||
 
-  image,
+        !location ||
 
-  description,
+        !beds ||
 
-  type
+        !baths ||
 
-};
-console.log(newProperty);
+        !image ||
 
+        !description ||
 
-fetch(
+        !type
 
-  "http://localhost:8000/api/properties",
+      ) {
 
-  {
+        setError(
+          "Please fill all fields"
+        );
 
-    method: "POST",
+        return;
 
-    headers: {
+      }
 
-      "Content-Type":
-        "application/json",
+      setError("");
 
-      Authorization:
-        `Bearer ${token}`
+      setLoading(true);
 
-    },
+      // JWT Token
 
-    body: JSON.stringify(
+      const token =
 
-      newProperty
+        localStorage.getItem(
+          "token"
+        );
 
-    )
+      // Property Object
 
-  }
+      const newProperty = {
 
-)
+        title,
 
-  const handleSubmit = (e) => {
+        price:
+          price,
 
-    e.preventDefault();
+        location,
 
-    // Validation
+        beds:
+          Number(beds),
 
-    if (
-      !title ||
-      !price ||
-      !location ||
-      !beds ||
-      !baths ||
-      !image ||
-      !description ||
-      !type
-    ) {
-      setError("Please fill all fields");
-      return;
-    }
+        baths:
+          Number(baths),
 
-    setError("");
+        image,
 
-    setLoading(true);
+        description,
 
-    
+        type
 
-    // Simulate loading
+      };
 
-    setTimeout(() => {
+      try {
 
-      const updatedProperties = [
-        ...properties,
-        newProperty
-      ];
+        const response =
+          await fetch(
 
-      setProperties(updatedProperties);
+            "http://localhost:8000/api/properties",
 
-      localStorage.setItem(
-        "properties",
-        JSON.stringify(updatedProperties)
-      );
-window.location.reload();
-      // Clear form
+            {
 
-      setTitle("");
-      setPrice("");
-      setLocation("");
-      setBeds("");
-      setBaths("");
-      setImage("");
-      setDescription("");
-      setType("");
+              method: "POST",
 
-      // Hide form
+              headers: {
 
-      setShowForm(false);
+                "Content-Type":
+                  "application/json",
+
+                Authorization:
+                  `Bearer ${token}`
+
+              },
+
+              body:
+                JSON.stringify(
+                  newProperty
+                )
+
+            }
+
+          );
+
+        const data =
+          await response.json();
+
+        if (response.ok) {
+
+          // Clear Form
+
+          setTitle("");
+          setPrice("");
+          setLocation("");
+          setBeds("");
+          setBaths("");
+          setImage("");
+          setDescription("");
+          setType("");
+
+          //Close form
+          setShowForm(false);
+
+          //Reload Properties
+
+          window.location.reload();
+
+          // Hide Form
+
+          setShowForm(false);
+
+        }
+
+        else {
+
+          setError(
+            data.message
+          );
+
+        }
+
+      }
+
+      catch (error) {
+
+        console.log(error);
+
+        setError(
+          "Something went wrong"
+        );
+
+      }
 
       setLoading(false);
 
-    }, 3000);
-
-  };
+    };
 
   return (
 
     <div className="add-property-container">
-  
+
       {/* Button */}
 
       <button
+
         className="add-btn"
+
         onClick={() =>
-          setShowForm(!showForm)
+
+          setShowForm(
+            !showForm
+          )
+
         }
+
       >
 
         {showForm
+
           ? "Close Form"
+
           : "Add Property"}
 
       </button>
@@ -182,8 +220,13 @@ window.location.reload();
       {showForm && (
 
         <form
+
           className="form"
-          onSubmit={handleSubmit}
+
+          onSubmit={
+            handleSubmit
+          }
+
         >
 
           <h2>
@@ -191,68 +234,133 @@ window.location.reload();
           </h2>
 
           <input
+
             type="text"
+
             placeholder="Title"
+
             value={title}
+
             onChange={(e) =>
-              setTitle(e.target.value)
+
+              setTitle(
+                e.target.value
+              )
+
             }
+
           />
 
           <input
+
             type="text"
+
             placeholder="Price"
+
             value={price}
+
             onChange={(e) =>
-              setPrice(e.target.value)
+
+              setPrice(
+                e.target.value
+              )
+
             }
+
           />
 
           <input
+
             type="text"
+
             placeholder="Location"
+
             value={location}
+
             onChange={(e) =>
-              setLocation(e.target.value)
+
+              setLocation(
+                e.target.value
+              )
+
             }
+
           />
 
           <input
+
             type="number"
+
             className="number-field"
+
             placeholder="Bedrooms"
+
             min="0"
+
             value={beds}
+
             onChange={(e) =>
-              setBeds(e.target.value)
+
+              setBeds(
+                e.target.value
+              )
+
             }
+
           />
 
           <input
+
             type="number"
+
             className="number-field"
+
             placeholder="Bathrooms"
+
             min="0"
+
             value={baths}
+
             onChange={(e) =>
-              setBaths(e.target.value)
+
+              setBaths(
+                e.target.value
+              )
+
             }
+
           />
 
           <input
+
             type="text"
+
             placeholder="Image URL"
+
             value={image}
+
             onChange={(e) =>
-              setImage(e.target.value)
+
+              setImage(
+                e.target.value
+              )
+
             }
+
           />
 
           <select
+
             value={type}
+
             onChange={(e) =>
-              setType(e.target.value)
+
+              setType(
+                e.target.value
+              )
+
             }
+
           >
 
             <option value="">
@@ -286,22 +394,36 @@ window.location.reload();
           </select>
 
           <textarea
+
             placeholder="Description"
+
             value={description}
+
             onChange={(e) =>
+
               setDescription(
                 e.target.value
               )
+
             }
+
           />
 
-          {error && (
-  <div className="error-box">
-    <h3>⚠ {error}</h3>
-  </div>
-)}
+          {/* Error */}
 
-          {/* Loading Skeleton */}
+          {error && (
+
+            <div className="error-box">
+
+              <h3>
+                ⚠ {error}
+              </h3>
+
+            </div>
+
+          )}
+
+          {/* Loading */}
 
           {loading ? (
 
@@ -312,10 +434,11 @@ window.location.reload();
             </div>
 
           ) : (
-            
-            
+
             <button type="submit">
+
               Add Property
+
             </button>
 
           )}
@@ -323,7 +446,6 @@ window.location.reload();
         </form>
 
       )}
-
 
     </div>
 

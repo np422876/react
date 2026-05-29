@@ -73,25 +73,38 @@ function Propertycard({
       {/* SAVE BUTTON */}
 
       <button
-        onClick={(e) => {
 
-          e.stopPropagation();
+  type="button"
 
-          handleSave(property);
+  onClick={(e) => {
 
-        }}
-        className={
-          isSaved
-            ? styles.savedButton
-            : styles.button
-        }
-      >
+    e.preventDefault();
 
-        {isSaved
-          ? "Saved❤️"
-          : "Save❤️"}
+    e.stopPropagation();
 
-      </button>
+    handleSave(property);
+
+  }}
+
+  className={
+
+    isSaved
+
+      ? styles.savebtn
+
+      : styles.button
+
+  }
+
+>
+
+  {isSaved
+
+    ? "Saved❤️"
+
+    : "Save❤️"}
+
+</button>
 
     </div>
 
