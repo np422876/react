@@ -408,7 +408,7 @@ function App() {
             />
 
             <Route
-              path="/properties"
+              path="/properties/:id"
               element={
                 <Properties
                   savedProperties={

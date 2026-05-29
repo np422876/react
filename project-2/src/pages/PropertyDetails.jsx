@@ -1,4 +1,5 @@
-import React, {
+import React,
+{
   useEffect,
   useState
 } from "react";
@@ -9,24 +10,34 @@ import {
 
 function PropertyDetails() {
 
-  const { id } = useParams();
+  const { id } =
+    useParams();
 
-  const [property, setProperty] =
+  const [property,
+    setProperty] =
     useState(null);
 
   useEffect(() => {
 
     fetch(
-      `https://6a0417582afe8349b4b5d8e5.mockapi.io/api/properties/${id}`
+
+      `${import.meta.env.VITE_API_URL}/api/properties/${id}`
+
     )
 
-      .then((res) => res.json())
+      .then((res) =>
+        res.json()
+      )
 
       .then((data) => {
 
-        console.log(data);
-
         setProperty(data);
+
+      })
+
+      .catch((error) => {
+
+        console.log(error);
 
       });
 
@@ -34,7 +45,7 @@ function PropertyDetails() {
 
   if (!property) {
 
-    return <h1>Loading...</h1>;
+    return <h2>Loading...</h2>;
 
   }
 
@@ -44,17 +55,17 @@ function PropertyDetails() {
 
       <img
         src={property.image}
-        width="400"
         alt={property.title}
+        width="300"
       />
 
       <h1>
         {property.title}
       </h1>
 
-      <h2>
+      <h3>
         {property.price}
-      </h2>
+      </h3>
 
       <p>
         {property.location}
@@ -62,11 +73,13 @@ function PropertyDetails() {
 
       <p>
         Bedrooms:
+        {" "}
         {property.beds}
       </p>
 
       <p>
         Bathrooms:
+        {" "}
         {property.baths}
       </p>
 

@@ -40,6 +40,61 @@ function Addprop() {
   const [type, setType] =
     useState("");
 
+    const token =
+  localStorage.getItem(
+    "token"
+  );
+
+  const newProperty = {
+
+  title,
+
+  price,
+
+  location,
+
+  beds,
+
+  baths,
+
+  image,
+
+  description,
+
+  type
+
+};
+console.log(newProperty);
+
+
+fetch(
+
+  "http://localhost:8000/api/properties",
+
+  {
+
+    method: "POST",
+
+    headers: {
+
+      "Content-Type":
+        "application/json",
+
+      Authorization:
+        `Bearer ${token}`
+
+    },
+
+    body: JSON.stringify(
+
+      newProperty
+
+    )
+
+  }
+
+)
+
   const handleSubmit = (e) => {
 
     e.preventDefault();
@@ -63,18 +118,6 @@ function Addprop() {
     setError("");
 
     setLoading(true);
-
-    const newProperty = {
-      id: Date.now().toString(),
-      title,
-      price,
-      location,
-      beds: Number(beds),
-      baths: Number(baths),
-      image,
-      description,
-      type
-    };
 
     
 

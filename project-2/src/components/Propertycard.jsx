@@ -21,7 +21,7 @@ function Propertycard({
       {/* IMAGE */}
 
       <Link
-        to={`/properties/${property.id}`}
+        to={`/properties/${property._id}`}
         className={styles.cardlink}
         onClick={(e) =>
           e.stopPropagation()

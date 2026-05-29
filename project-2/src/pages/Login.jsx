@@ -21,75 +21,109 @@ function Login({
   const emailPattern =
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
 
-    e.preventDefault();
+  e.preventDefault();
 
-    // Empty Fields Check
+  if (!email || !password) {
 
-    if (!email || !password) 
-      {
-      setError("Please fill all fields");
-
-      return;
-
-    }
-
-    // Email Validation
-
-    if (!emailPattern.test(email)) 
-      {
-
-      setError("Enter a valid email address");
-
-      return;
-
-    }
-
-    // Get Stored User
-
-    const storedEmail =localStorage.getItem("userEmail");
-
-    const storedPassword =localStorage.getItem("userPassword");
-
-    // Email Check
-
-    if (email !== storedEmail) {
-
-      setError("Email not found");
-
-      return;
-
-    }
-
-    // Password Check
-
-    if (password !== storedPassword) {
-
-      setError("Incorrect password");
-
-      return;
-
-    }
-
-    // Clear Error
-
-    setError("");
-
-    // Login User
-
-    localStorage.setItem(
-      "isLoggedIn",
-      "true"
+    setError(
+      "Please fill all fields"
     );
 
-    setIsLoggedIn(true);
+    return;
 
-    // Redirect Home
+  }
 
-    window.location.href = "/";
+  try {
 
-  };
+    const response = await fetch(
+
+      "http://localhost:8000/api/auth/login",
+
+      {
+
+        method: "POST",
+
+        headers: {
+
+          "Content-Type":
+            "application/json"
+
+        },
+
+        body: JSON.stringify({
+
+          email,
+
+          password
+
+        })
+
+      }
+
+    );
+
+    const data =
+      await response.json();
+
+    if (response.ok) {
+
+      // Save JWT Token
+
+      localStorage.setItem(
+
+        "token",
+
+        data.token
+
+      );
+
+      // Login State
+
+      localStorage.setItem(
+
+        "isLoggedIn",
+
+        "true"
+
+      );
+
+      localStorage.setItem(
+
+        "userEmail",
+
+        email
+
+      );
+
+      setIsLoggedIn(true);
+
+      window.location.href = "/";
+
+    }
+
+    else {
+
+      setError(
+        data.message
+      );
+
+    }
+
+  }
+
+  catch (error) {
+
+    console.log(error);
+
+    setError(
+      "Something went wrong"
+    );
+
+  }
+
+};
 
   return (
 
