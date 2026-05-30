@@ -107,11 +107,40 @@
 }
 
 .deletebtn {
-  background: #000000;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 35px;
+  margin-bottom: -10px
+}
+
+.deletebtn img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
+  margin-bottom: -10px;
+}
+
+
+.editbtn {
+  background-color: #000000;
   color: white;
   border: none;
-  padding: 10px;
+  padding: 10px 18px;
   border-radius: 8px;
   cursor: pointer;
   margin-top: 10px;
+  margin-right: 155px;
+  transition: 0.3s ease;
+}
+
+.editbtn:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+}
+
+.editbtn:active {
+  transform: scale(0.97);
 }

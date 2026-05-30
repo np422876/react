@@ -28,17 +28,10 @@ import "./App.css";
 import "./components/Navbar.css";
 import "./components/Save.css";
 
+import useFetch from "./hooks/useFetch";
+import useAuth from "./hooks/useAuth";
+
 function App() {
-
-  // Loading State
-
-  const [loading, setLoading] =
-    useState(true);
-
-  // Error State
-
-  const [error, setError] =
-    useState("");
 
   // Search State
 
@@ -53,11 +46,6 @@ function App() {
   const [maxPrice, setMaxPrice] =
     useState("");
 
-  // Properties
-
-  const [properties, setProperties] =
-    useState([]);
-
   // Favorites
 
   const [savedProperties,
@@ -70,63 +58,26 @@ function App() {
     setSelectedProperty] =
     useState(null);
 
-  // Login State
+    const {
 
-  const [isLoggedIn,
-    setIsLoggedIn] =
-    useState(false);
+  data: properties,
 
-  // =========================
-  // FETCH PROPERTIES
-  // =========================
+  loading,
 
-  useEffect(() => {
+  error,
 
-    fetch(
-      `${import.meta.env.VITE_API_URL}/api/properties`
-    )
+  setData: setProperties
 
-      .then((res) => res.json())
+} = useFetch(
 
-      .then((data) => {
+  `${import.meta.env.VITE_API_URL}/api/properties`
 
-        setProperties(data);
+);
 
-        setLoading(false);
-
-      })
-
-      .catch(() => {
-
-        setError(
-          "Failed to load properties"
-        );
-
-        setLoading(false);
-
-      });
-
-  }, []);
-
-  // =========================
-  // LOGIN CHECK
-  // =========================
-
-  useEffect(() => {
-
-    const loginStatus =
-      localStorage.getItem(
-        "isLoggedIn"
-      );
-
-    if (loginStatus === "true") {
-
-      setIsLoggedIn(true);
-
-    }
-
-  }, []);
-
+  const {
+  isLoggedIn,
+  setIsLoggedIn
+} = useAuth();
   // =========================
   // FETCH FAVORITES
   // =========================
@@ -370,12 +321,10 @@ function App() {
             }
 
           />
-
           <Route
   path="/edit-property/:id"
   element={<EditProperty />}
 />
-
         </Routes>
 
       ) : (
@@ -644,6 +593,11 @@ function App() {
               }
 
             />
+            <Route
+    path="/edit-property/:id"
+    element={<EditProperty />}
+  />
+
 
           </Routes>
 
