@@ -48,52 +48,16 @@ function Save() {
 
           );
 
-        const data =
-          await response.json();
+        const data = await response.json();
 
-        setFavorites(data);
+console.log("STATUS:", response.status);
+console.log("FAVORITES:", data);
 
-      }
-
-      catch (error) {
-
-        console.log(error);
-
-      }
-
-    };
-
-  const handleSave =
-    async (propertyId) => {
-
-      try {
-
-        const token =
-
-          localStorage.getItem(
-            "token"
-          );
-
-        await fetch(
-
-          `http://localhost:8000/api/user/favorite/${propertyId}`,
-
-          {
-
-            method: "POST",
-
-            headers: {
-
-              Authorization:
-                `Bearer ${token}`
-
-            }
-
-          }
-
-        );
-
-        fetchFavorites();
+setFavorites(
+  Array.isArray(data)
+    ? data
+    : []
+);
 
       }
 
@@ -104,6 +68,8 @@ function Save() {
       }
 
     };
+
+    
 
   return (
 
@@ -124,27 +90,13 @@ function Save() {
 
         ) : (
 
-          favorites.map(
+          favorites.map((property) => (
+  <Propertycard
+    key={property._id}
+    property={property}
+    isSaved={true}
+  />
 
-            (property) => (
-
-              <Propertycard
-
-                key={property._id}
-
-                property={property}
-
-                handleSave={() =>
-
-                  handleSave(
-                    property.id
-                  )
-
-                }
-
-                isSaved={true}
-
-              />
 
             )
 

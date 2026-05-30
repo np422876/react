@@ -17,6 +17,7 @@ import PropertyDetails from "./pages/PropertyDetails";
 
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import EditProperty from "./pages/EditProperty";
 import Addprop from "./components/Addprop";
 
 import Navbar from "./components/Navbar";
@@ -132,127 +133,135 @@ function App() {
 
   useEffect(() => {
 
-    const fetchFavorites =
-      async () => {
+  const fetchFavorites = async () => {
 
-        try {
+    try {
 
-          const token =
-            localStorage.getItem(
-              "token"
-            );
+      const token =
+        localStorage.getItem("token");
 
-          if (!token) return;
+      if (!token) return;
 
-          const response =
-            await fetch(
-
-              "http://localhost:8000/api/user/favorites",
-
-              {
-
-                headers: {
-
-                  Authorization:
-                    `Bearer ${token}`
-
-                }
-
-              }
-
-            );
-
-          const data =
-            await response.json();
-
-          setSavedProperties(data);
-
-        }
-
-        catch (error) {
-
-          console.log(error);
-
-        }
-
-      };
-
-    fetchFavorites();
-
-  }, []);
-
-  // =========================
-  // SAVE / UNSAVE PROPERTY
-  // =========================
-
-  const handleSave =
-    async (property) => {
-
-      try {
-
-        const token =
-          localStorage.getItem(
-            "token"
-          );
-
-        await fetch(
-
-          `http://localhost:8000/api/user/favorite/${property._id}`,
-
-          {
-
-            method: "POST",
-
-            headers: {
-
-              Authorization:
-                `Bearer ${token}`
-
-            }
-
+      const response = await fetch(
+        "http://localhost:8000/api/user/favorites",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
           }
+        }
+      );
 
-        );
+      const data =
+        await response.json();
 
-        // Reload favorites
+      console.log(
+        "FAVORITES:",
+        data
+      );
 
-        const response =
-          await fetch(
+      setSavedProperties(
+        Array.isArray(data)
+          ? data
+          : []
+      );
 
-            "http://localhost:8000/api/user/favorites",
+    }
 
-            {
+    catch (error) {
 
-              headers: {
+      console.log(error);
 
-                Authorization:
-                  `Bearer ${token}`
+    }
 
-              }
+  };
 
-            }
+  fetchFavorites();
 
-          );
+}, []);
 
-        const data =
-          await response.json();
+  // SAVE / UNSAVE PROPERTY
 
-        setSavedProperties(data);
+  const handleSave = async (property) => {
+
+  console.log("PROPERTY:", property);
+
+  const token = localStorage.getItem("token");
+
+  console.log("TOKEN:", token);
+
+  if (!token) {
+
+    alert("Please login again");
+
+    return;
+
+  }
+
+  try {
+
+    const response = await fetch(
+
+      `http://localhost:8000/api/user/favorite/${property._id}`,
+
+      {
+
+        method: "POST",
+
+        headers: {
+
+          Authorization: `Bearer ${token}`
+
+        }
 
       }
 
-      catch (error) {
+    );
 
-        console.log(error);
+    const result = await response.json();
+
+    console.log(result);
+
+    const favoritesResponse = await fetch(
+
+      "http://localhost:8000/api/user/favorites",
+
+      {
+
+        headers: {
+
+          Authorization: `Bearer ${token}`
+
+        }
 
       }
 
-    };
+    );
 
-  // =========================
+    const favoritesData =
+      await favoritesResponse.json();
+
+    setSavedProperties(
+
+      Array.isArray(favoritesData)
+
+        ? favoritesData
+
+        : []
+
+    );
+
+  }
+
+  catch (error) {
+
+    console.log(error);
+
+  }
+
+};
+
   // SEARCH
-  // =========================
-
+  
   const handleSearch = (e) => {
 
     setSearch(
@@ -361,6 +370,11 @@ function App() {
             }
 
           />
+
+          <Route
+  path="/edit-property/:id"
+  element={<EditProperty />}
+/>
 
         </Routes>
 
@@ -657,4 +671,4 @@ function App() {
 
 }
 
-export default App;
+export default App

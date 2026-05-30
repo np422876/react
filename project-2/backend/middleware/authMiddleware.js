@@ -1,16 +1,17 @@
 const jwt = require("jsonwebtoken");
 
 const authMiddleware = (
-
   req,
-
   res,
-
   next
-
 ) => {
 
   try {
+
+    console.log(
+      "AUTH HEADER:",
+      req.headers.authorization
+    );
 
     const authHeader =
       req.headers.authorization;
@@ -29,6 +30,11 @@ const authMiddleware = (
     const token =
       authHeader.split(" ")[1];
 
+    console.log(
+      "TOKEN:",
+      token
+    );
+
     const decoded =
       jwt.verify(
 
@@ -38,6 +44,11 @@ const authMiddleware = (
 
       );
 
+    console.log(
+      "DECODED:",
+      decoded
+    );
+
     req.user = decoded;
 
     next();
@@ -46,7 +57,9 @@ const authMiddleware = (
 
   catch (error) {
 
-    res.status(401).json({
+    console.log(error);
+
+    return res.status(401).json({
 
       message:
         "Invalid token"

@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./Propertycard.module.css";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Propertycard({
   property,
@@ -9,6 +10,7 @@ function Propertycard({
   onCardClick
 }) {
 
+  const navigate = useNavigate();
   return (
 
     <div
@@ -73,36 +75,71 @@ function Propertycard({
       {/* SAVE BUTTON */}
 
       <button
-
   type="button"
-
   onClick={(e) => {
 
     e.preventDefault();
 
     e.stopPropagation();
 
+    console.log(property);
+
     handleSave(property);
 
   }}
-
   className={
-
     isSaved
-
       ? styles.savebtn
-
       : styles.button
-
   }
+>
+  {isSaved
+    ? "Saved❤️"
+    : "Save❤️"}
+</button>
+
+<button
+  className={styles.deletebtn}
+  onClick={async (e) => {
+
+    e.stopPropagation();
+
+    const confirmDelete =
+      window.confirm(
+        "Are you sure you want to delete this property?"
+      );
+
+    if (!confirmDelete) return;
+
+    try {
+
+      await fetch(
+
+        `http://localhost:8000/api/properties/${property._id}`,
+
+        {
+
+          method: "DELETE"
+
+        }
+
+      );
+
+      window.location.reload();
+
+    }
+
+    catch (error) {
+
+      console.log(error);
+
+    }
+
+  }}
 
 >
 
-  {isSaved
-
-    ? "Saved❤️"
-
-    : "Save❤️"}
+  Delete
 
 </button>
 

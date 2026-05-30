@@ -22,9 +22,13 @@ app.use(express.json());
 const PORT =
   process.env.PORT || 8000;
 
+// ====================
 // MongoDB Connection
+// ====================
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(
+  process.env.MONGO_URI
+)
 
 .then(() => {
 
@@ -40,7 +44,9 @@ mongoose.connect(process.env.MONGO_URI)
 
 });
 
+// ====================
 // Home Route
+// ====================
 
 app.get("/", (req, res) => {
 
@@ -50,7 +56,187 @@ app.get("/", (req, res) => {
 
 });
 
-// GET All Properties
+// ====================
+// Register
+// ====================
+
+app.post(
+  "/api/auth/register",
+
+  async (req, res) => {
+
+    try {
+
+      const {
+        name,
+        email,
+        password
+      } = req.body;
+
+      const existingUser =
+        await User.findOne({
+          email
+        });
+
+      if (existingUser) {
+
+        return res.status(400).json({
+
+          message:
+            "User already exists"
+
+        });
+
+      }
+
+      const hashedPassword =
+        await bcrypt.hash(
+          password,
+          10
+        );
+
+      const newUser =
+        new User({
+
+          name,
+
+          email,
+
+          password:
+            hashedPassword
+
+        });
+
+      await newUser.save();
+
+      res.status(201).json({
+
+        message:
+          "User registered successfully"
+
+      });
+
+    }
+
+    catch (error) {
+
+      res.status(500).json({
+
+        message:
+          error.message
+
+      });
+
+    }
+
+  }
+
+);
+
+// ====================
+// Login
+// ====================
+
+app.post(
+  "/api/auth/login",
+
+  async (req, res) => {
+
+    try {
+
+      const {
+        email,
+        password
+      } = req.body;
+
+      const user =
+        await User.findOne({
+          email
+        });
+
+      if (!user) {
+
+        return res.status(400).json({
+
+          message:
+            "User not found"
+
+        });
+
+      }
+
+      const isMatch =
+        await bcrypt.compare(
+
+          password,
+
+          user.password
+
+        );
+
+      if (!isMatch) {
+
+        return res.status(400).json({
+
+          message:
+            "Invalid password"
+
+        });
+
+      }
+
+      const token =
+        jwt.sign(
+
+          {
+            id: user._id
+          },
+
+          process.env.JWT_SECRET,
+
+          {
+            expiresIn: "1d"
+          }
+
+        );
+
+      res.json({
+
+        message:
+          "Login successful",
+
+        token,
+
+        user: {
+
+          name: user.name,
+
+          email: user.email
+
+        }
+
+      });
+
+    }
+
+    catch (error) {
+
+      res.status(500).json({
+
+        message:
+          error.message
+
+      });
+
+    }
+
+  }
+
+);
+
+// ====================
+// Get All Properties
+// ====================
 
 app.get(
   "/api/properties",
@@ -71,7 +257,7 @@ app.get(
       res.status(500).json({
 
         message:
-          "Failed to fetch properties"
+          error.message
 
       });
 
@@ -81,33 +267,55 @@ app.get(
 
 );
 
-app.get("/api/properties/:id", async (req, res) => {
+// ====================
+// Get Single Property
+// ====================
 
-  try {
+app.get(
+  "/api/properties/:id",
 
-    const property =
-      await Property.findById(
-        req.params.id
-      );
+  async (req, res) => {
 
-    res.json(property);
+    try {
+
+      const property =
+        await Property.findById(
+          req.params.id
+        );
+
+      if (!property) {
+
+        return res.status(404).json({
+
+          message:
+            "Property not found"
+
+        });
+
+      }
+
+      res.json(property);
+
+    }
+
+    catch (error) {
+
+      res.status(500).json({
+
+        message:
+          error.message
+
+      });
+
+    }
 
   }
 
-  catch (error) {
+);
 
-    res.status(500).json({
-
-      message:
-        error.message
-
-    });
-
-  }
-
-});
-
-// POST Property
+// ====================
+// Add Property
+// ====================
 
 app.post(
   "/api/properties",
@@ -144,10 +352,14 @@ app.post(
 
 );
 
-// PUT Property
+// ====================
+// Update Property
+// ====================
 
 app.put(
   "/api/properties/:id",
+
+  authMiddleware,
 
   async (req, res) => {
 
@@ -160,11 +372,15 @@ app.put(
 
           req.body,
 
-          { new: true }
+          {
+            new: true
+          }
 
         );
 
-      res.json(updatedProperty);
+      res.json(
+        updatedProperty
+      );
 
     }
 
@@ -183,114 +399,33 @@ app.put(
 
 );
 
-// DELETE Property
+// ====================
+// Delete Property
+// ====================
 
 app.delete(
   "/api/properties/:id",
+
+  authMiddleware,
 
   async (req, res) => {
 
     try {
 
       await Property.findByIdAndDelete(
-
         req.params.id
-
       );
 
       res.json({
 
         message:
-          "Property deleted successfully"
+          "Property deleted"
 
       });
 
     }
 
     catch (error) {
-
-      res.status(400).json({
-
-        message:
-          error.message
-
-      });
-
-    }
-
-  }
-
-);
-
-// REGISTER
-
-app.post(
-  "/api/auth/register",
-
-  async (req, res) => {
-
-    try {
-
-      const {
-        name,
-        email,
-        password
-      } = req.body;
-
-      // Check Existing User
-
-      const existingUser =
-        await User.findOne({
-          email
-        });
-
-      if (existingUser) {
-
-        return res.status(400).json({
-
-          message:
-            "User already exists"
-
-        });
-
-      }
-
-      // Hash Password
-
-      const hashedPassword =
-        await bcrypt.hash(
-          password,
-          10
-        );
-
-      // Create User
-
-      const newUser =
-        new User({
-
-          name,
-
-          email,
-
-          password:
-            hashedPassword
-
-        });
-
-      await newUser.save();
-
-      res.status(201).json({
-
-        message:
-          "User registered successfully"
-
-      });
-
-    }
-
-    catch (error) {
-
-      console.log(error);
 
       res.status(500).json({
 
@@ -305,42 +440,11 @@ app.post(
 
 );
 
-// LOGIN
+// ====================
+// Toggle Favorite
+// ====================
 
 app.post(
-  "/api/auth/login",
-
-  async (req, res) => {
-
-    try {
-
-      const {
-        email,
-        password
-      } = req.body;
-
-      // Find User
-
-      const user =
-        await User.findOne({
-          email
-        });
-
-      if (!user) {
-
-        return res.status(400).json({
-
-          message:
-            "User not found"
-
-        });
-
-      }
-
-      // Toggle Favorite
-
-app.post(
-
   "/api/user/favorite/:propertyId",
 
   authMiddleware,
@@ -358,8 +462,13 @@ app.post(
         req.params.propertyId;
 
       const alreadySaved =
-        user.favorites.includes(
-          propertyId
+        user.favorites.some(
+
+          (id) =>
+
+            id.toString() ===
+            propertyId
+
         );
 
       if (alreadySaved) {
@@ -413,10 +522,11 @@ app.post(
 
 );
 
+// ====================
 // Get Favorites
+// ====================
 
 app.get(
-
   "/api/user/favorites",
 
   authMiddleware,
@@ -428,7 +538,9 @@ app.get(
       const user =
         await User.findById(
           req.user.id
-        ).populate("favorites");
+        ).populate(
+          "favorites"
+        );
 
       res.json(
         user.favorites
@@ -451,89 +563,11 @@ app.get(
 
 );
 
-      // Compare Password
-
-      const isMatch =
-        await bcrypt.compare(
-
-          password,
-
-          user.password
-
-        );
-
-      if (!isMatch) {
-
-        return res.status(400).json({
-
-          message:
-            "Invalid password"
-
-        });
-
-      }
-
-      // Generate JWT
-
-      const token =
-        jwt.sign(
-
-          {
-
-            id: user._id
-
-          },
-
-          process.env.JWT_SECRET,
-
-          {
-
-            expiresIn: "1d"
-
-          }
-
-        );
-
-      res.json({
-
-  message:
-    "Login successful",
-
-  token,
-
-  user: {
-
-    name: user.name,
-
-    email: user.email
-
-  }
-
-});
-
-    }
-
-    catch (error) {
-
-      console.log(error);
-
-      res.status(500).json({
-
-        message:
-          error.message
-
-      });
-
-    }
-
-  }
-
-);
-
+// ====================
 // Protected Route
+// ====================
 
 app.get(
-
   "/api/protected",
 
   authMiddleware,
@@ -541,22 +575,21 @@ app.get(
   (req, res) => {
 
     res.json({
-
       message:
         "Protected route accessed"
-
     });
-
   }
-
 );
 
 // Start Server
 
-app.listen(PORT, () => {
+app.listen(
+  PORT,
 
-  console.log(
-    `Server running on port ${8000}`
-  );
+  () => {
 
-});
+    console.log(
+      `Server running on port ${PORT}`
+    );
+  }
+);
