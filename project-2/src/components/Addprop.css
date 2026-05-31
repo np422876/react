@@ -1,115 +1,85 @@
-.add-property-container {
-
-}
-
-/* Toggle Button */
-
-.add-btn {
-  padding: 12px 20px;
-  background-color: black;
+.edit-container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 30px;
   color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-bottom: 20px;
+  background: rgb(0, 0, 0);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+.edit-container h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #222;
+}
 
-.form {
-  width: 420px;
+.edit-form {
   display: flex;
+  color: rgb(0, 0, 0);
+  background: whitesmoke;
   flex-direction: column;
-  gap: 18px;
+  gap: 15px;
+  cursor: pointer;
 }
 
-
-.form input[type="text"],
-.form input[type="number"],
-.form textarea {
-  width: 420px;
-  padding: 14px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
+.edit-form input,
+.edit-form textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
   font-size: 16px;
+  outline: none;
+  transition: 0.3s;
   box-sizing: border-box;
 }
 
-.form select{
-  width: 420px;
-  padding: 14px;
-  box-sizing: border-box;
-  margin-left: -1px;
+.edit-form input:focus,
+.edit-form textarea:focus {
+  border-color: #2563eb;
 }
 
-.form input[type="number"] {
-  appearance: textfield;
-  margin-left: -1px;
-}
-
-
-.form textarea {
+.edit-form textarea {
   height: 120px;
   resize: none;
 }
 
-
-.form button {
-  width: 420px;
+.update-btn {
+  width: 100%;
   padding: 14px;
-  background-color: black;
-  color: white;
   border: none;
   border-radius: 10px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-
-/* Skeleton Loader */
-
-.skeleton-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-}
-
-.skeleton-card {
-  height: 300px;
-  border-radius: 10px;
-  background: #ddd;
-  animation: pulse 1.5s infinite;
-}
-
-
-@keyframes pulse {
-  0% {
-    opacity: 0.6;
-  }
-
-  50% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0.6;
-  }
-}
-
-/* No Properties */
-
-.no-properties {
-  text-align: center;
-  padding: 40px;
-  color: #555;
-}
-
-/* Error Box */
-
-.error-box {
-  text-align: center;
-  padding: 15px;
-  border: 3px solid #cc0000;
-  border-radius: 10px;
-  color: #cc0000;
+  background: #2563eb;
+  color: white;
   font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: 0.3s;
+}
+
+.update-btn:hover {
+  background: #1d4ed8;
+}
+
+@media (max-width: 768px) {
+  .edit-container {
+    margin: 20px;
+    padding: 20px;
+  }
+
+  .edit-container h1 {
+    font-size: 24px;
+  }
+}
+
+.edit-form select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  box-sizing: border-box;
 }

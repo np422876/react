@@ -8,6 +8,8 @@ import {
   Routes,
   Route
 } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 import Home from "./pages/Home";
 import Properties from "./pages/Properties";
@@ -51,6 +53,8 @@ function App() {
   const [savedProperties,
     setSavedProperties] =
     useState([]);
+
+    const navigate = useNavigate();
 
   // Modal
 
@@ -224,6 +228,7 @@ function App() {
   // =========================
   // FILTERED PROPERTIES
   // =========================
+  
 
   const filteredProperties =
     properties.filter((property) => {
@@ -419,7 +424,14 @@ function App() {
 
             />
 
-          </div>
+            <Button
+  to="/add-property"
+  className="add-btn"
+>
+  Add Property
+</Button>
+
+             </div>
 
           <Routes>
 
@@ -575,24 +587,10 @@ function App() {
             {/* ADD PROPERTY */}
 
             <Route
+  path="/add-property"
+  element={<Addprop />}
+/>
 
-              path="/add-property"
-
-              element={
-
-                isLoggedIn
-
-                  ? <Addprop />
-
-                  : <Login
-                      setIsLoggedIn={
-                        setIsLoggedIn
-                      }
-                    />
-
-              }
-
-            />
             <Route
     path="/edit-property/:id"
     element={<EditProperty />}

@@ -5,12 +5,9 @@ function Home({ properties, setProperties }) {
 
   return (
 
-    <div>
+      /*Find your dream property*/
 
-      <Addprop
-        properties={properties}
-        setProperties={setProperties}
-      />
+    <div className="home">
 
     </div>
 

@@ -1,456 +1,197 @@
-import React,{useState,useContext} from "react";
-
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Addprop.css";
 
-import {PropertyContext} from "../context/PropertyContext";
-
 function Addprop() {
+  const navigate = useNavigate();
 
-  const {properties,setProperties} = useContext(PropertyContext);
+  const [formData, setFormData] = useState({
+    title: "",
+    price: "",
+    location: "",
+    beds: "",
+    baths: "",
+    image: "",
+    description: "",
+    type: ""
+  });
 
-  const [showForm,setShowForm] =useState(false);
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
 
-  const [loading,setLoading] =useState(false);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const [error,setError] =useState("");
-
-  const [title,setTitle] =useState("");
-
-  const [price,setPrice] =useState("");
-
-  const [location,setLocation] =useState("");
-
-  const [beds,setBeds] =useState("");
-
-  const [baths,setBaths] =useState("");
-
-  const [image,setImage] =useState("");
-
-  const [description,setDescription] =useState("");
-
-  const [type,setType] =useState("");
-
-  // Submit Form
-
-  const handleSubmit =
-    async (e) => {
-
-      e.preventDefault();
-
-      // Validation
-
-      if (
-
-        !title ||
-
-        !price ||
-
-        !location ||
-
-        !beds ||
-
-        !baths ||
-
-        !image ||
-
-        !description ||
-
-        !type
-
-      ) {
-
-        setError(
-          "Please fill all fields"
-        );
-
-        return;
-
-      }
-
-      setError("");
-
-      setLoading(true);
-
-      // JWT Token
-
+    try {
       const token =
+        localStorage.getItem("token");
 
-        localStorage.getItem(
-          "token"
+      const response = await fetch(
+        "http://localhost:8000/api/properties",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+
+            Authorization:
+              `Bearer ${token}`
+          },
+
+          body: JSON.stringify(
+            formData
+          )
+        }
+      );
+
+      if (response.ok) {
+        alert(
+          "Property added successfully"
         );
 
-      // Property Object
-
-      const newProperty = {
-
-        title,
-
-        price:
-          price,
-
-        location,
-
-        beds:
-          Number(beds),
-
-        baths:
-          Number(baths),
-
-        image,
-
-        description,
-
-        type
-
-      };
-
-      try {
-
-        const response =
-          await fetch(
-
-            "http://localhost:8000/api/properties",
-
-            {
-
-              method: "POST",
-
-              headers: {
-
-                "Content-Type":
-                  "application/json",
-
-                Authorization:
-                  `Bearer ${token}`
-
-              },
-
-              body:
-                JSON.stringify(
-                  newProperty
-                )
-
-            }
-
-          );
-
+        navigate("/");
+      } else {
         const data =
           await response.json();
 
-        if (response.ok) {
-
-          // Clear Form
-
-          setTitle("");
-          setPrice("");
-          setLocation("");
-          setBeds("");
-          setBaths("");
-          setImage("");
-          setDescription("");
-          setType("");
-
-          //Close form
-          setShowForm(false);
-
-          //Reload Properties
-
-          window.location.reload();
-
-          // Hide Form
-
-          setShowForm(false);
-
-        }
-
-        else {
-
-          setError(
-            data.message
-          );
-
-        }
-
-      }
-
-      catch (error) {
-
-        console.log(error);
-
-        setError(
-          "Something went wrong"
+        alert(
+          data.message ||
+          "Failed to add property"
         );
-
       }
+    } catch (error) {
+      console.log(error);
 
-      setLoading(false);
-
-    };
+      alert(
+        "Something went wrong"
+      );
+    }
+  };
 
   return (
+    <div className="edit-container">
 
-    <div className="add-property-container">
+      <h1>
+        Add Property
+      </h1>
 
-      {/* Button */}
-
-      <button
-
-        className="add-btn"
-
-        onClick={() =>
-
-          setShowForm(
-            !showForm
-          )
-
-        }
-
+      <form
+        className="edit-form"
+        onSubmit={handleSubmit}
       >
 
-        {showForm
+        <input
+          type="text"
+          name="title"
+          placeholder="Property Title"
+          value={formData.title}
+          onChange={handleChange}
+          required
+        />
 
-          ? "Close Form"
+        <input
+          type="text"
+          name="price"
+          placeholder="Price"
+          value={formData.price}
+          onChange={handleChange}
+          required
+        />
 
-          : "Add Property"}
+        <input
+          type="text"
+          name="location"
+          placeholder="Location"
+          value={formData.location}
+          onChange={handleChange}
+          required
+        />
 
-      </button>
+        <input
+          type="number"
+          name="beds"
+          placeholder="Bedrooms"
+          value={formData.beds}
+          onChange={handleChange}
+          required
+        />
 
-      {/* Form */}
+        <input
+          type="number"
+          name="baths"
+          placeholder="Bathrooms"
+          value={formData.baths}
+          onChange={handleChange}
+          required
+        />
 
-      {showForm && (
+        <input
+          type="text"
+          name="image"
+          placeholder="Image URL"
+          value={formData.image}
+          onChange={handleChange}
+          required
+        />
 
-        <form
-
-          className="form"
-
-          onSubmit={
-            handleSubmit
-          }
-
+        <select
+          name="type"
+          value={formData.type}
+          onChange={handleChange}
+          required
         >
-
-          <h2>
-            Add Property
-          </h2>
-
-          <input
-
-            type="text"
-
-            placeholder="Title"
-
-            value={title}
-
-            onChange={(e) =>
-
-              setTitle(
-                e.target.value
-              )
-
-            }
-
-          />
-
-          <input
-
-            type="text"
-
-            placeholder="Price"
-
-            value={price}
-
-            onChange={(e) =>
-
-              setPrice(
-                e.target.value
-              )
-
-            }
-
-          />
-
-          <input
-
-            type="text"
-
-            placeholder="Location"
-
-            value={location}
-
-            onChange={(e) =>
-
-              setLocation(
-                e.target.value
-              )
-
-            }
-
-          />
-
-          <input
-
-            type="number"
-
-            className="number-field"
-
-            placeholder="Bedrooms"
-
-            min="0"
-
-            value={beds}
-
-            onChange={(e) =>
-
-              setBeds(
-                e.target.value
-              )
-
-            }
-
-          />
-
-          <input
-
-            type="number"
-
-            className="number-field"
-
-            placeholder="Bathrooms"
-
-            min="0"
-
-            value={baths}
-
-            onChange={(e) =>
-
-              setBaths(
-                e.target.value
-              )
-
-            }
-
-          />
-
-          <input
-
-            type="text"
-
-            placeholder="Image URL"
-
-            value={image}
-
-            onChange={(e) =>
-
-              setImage(
-                e.target.value
-              )
-
-            }
-
-          />
-
-          <select
-
-            value={type}
-
-            onChange={(e) =>
-
-              setType(
-                e.target.value
-              )
-
-            }
-
-          >
-
-            <option value="">
-              Select Type
-            </option>
-
-            <option value="Apartment">
-              Apartment
-            </option>
-
-            <option value="Villa">
-              Villa
-            </option>
-
-            <option value="Flat">
-              Flat
-            </option>
-
-            <option value="Studio">
-              Studio
-            </option>
-
-            <option value="Bunglow">
-              Bunglow
-            </option>
-
-            <option value="Mansion">
-              Mansion
-            </option>
-
-          </select>
-
-          <textarea
-
-            placeholder="Description"
-
-            value={description}
-
-            onChange={(e) =>
-
-              setDescription(
-                e.target.value
-              )
-
-            }
-
-          />
-
-          {/* Error */}
-
-          {error && (
-
-            <div className="error-box">
-
-              <h3>
-                ⚠ {error}
-              </h3>
-
-            </div>
-
-          )}
-
-          {/* Loading */}
-
-          {loading ? (
-
-            <div className="skeleton-container">
-
-              <div className="skeleton-card"></div>
-
-            </div>
-
-          ) : (
-
-            <button type="submit">
-
-              Add Property
-
-            </button>
-
-          )}
-
-        </form>
-
-      )}
+          <option value="">
+            Select Type
+          </option>
+
+          <option value="Apartment">
+            Apartment
+          </option>
+
+          <option value="Villa">
+            Villa
+          </option>
+
+          <option value="Flat">
+            Flat
+          </option>
+
+          <option value="Studio">
+            Studio
+          </option>
+
+          <option value="Bunglow">
+            Bunglow
+          </option>
+
+          <option value="Mansion">
+            Mansion
+          </option>
+        </select>
+
+        <textarea
+          name="description"
+          placeholder="Description"
+          value={formData.description}
+          onChange={handleChange}
+          required
+        />
+        
+        <button
+  type="submit"
+  className="update-btn">
+  Add Property
+</button>
+        
+      </form>
 
     </div>
-
   );
-
 }
 
 export default Addprop;
