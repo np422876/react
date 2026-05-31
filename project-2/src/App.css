@@ -93,3 +93,18 @@ img{
     height: 40px;
     width: 200px;
 }
+.add-btn {
+  display: inline-block;
+  padding: 10px;
+  background: #000000;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.add-btn:hover {
+  background: #1d4ed8;
+}

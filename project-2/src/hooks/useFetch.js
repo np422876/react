@@ -8,22 +8,31 @@ function useFetch(url) {
 
   useEffect(() => {
 
-    fetch(url)
-      .then((res) => res.json())
-      .then((result) => {
+  const fetchData = async () => {
 
-        setData(result);
-        setLoading(false);
+    try {
 
-      })
-      .catch(() => {
+      const res = await fetch(url);
 
-        setError("Failed to load data");
-        setLoading(false);
+      const result = await res.json();
 
-      });
+      setData(result);
 
-  }, [url]);
+    } catch (err) {
+
+      setError("Failed to load data");
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
+  };
+
+  fetchData();
+
+}, [url]);
 
   return {
     data,

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Addprop.css";
 
-function Addprop() {
+function Addprop({closeform}) {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -24,54 +24,60 @@ function Addprop() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const token =
-        localStorage.getItem("token");
+  try {
 
-      const response = await fetch(
-        "http://localhost:8000/api/properties",
-        {
-          method: "POST",
+    const token =
+      localStorage.getItem("token");
 
-          headers: {
-            "Content-Type":
-              "application/json",
-
-            Authorization:
-              `Bearer ${token}`
-          },
-
-          body: JSON.stringify(
-            formData
-          )
-        }
-      );
-
-      if (response.ok) {
-        alert(
-          "Property added successfully"
-        );
-
-        navigate("/");
-      } else {
-        const data =
-          await response.json();
-
-        alert(
-          data.message ||
-          "Failed to add property"
-        );
+    const response = await fetch(
+      "http://localhost:8000/api/properties",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
       }
-    } catch (error) {
-      console.log(error);
+    );
+
+    const data =
+      await response.json();
+
+    console.log(
+      "SERVER RESPONSE:",
+      data
+    );
+
+    if (response.ok) {
 
       alert(
-        "Something went wrong"
+        "Property added successfully"
       );
+
+      window.location.reload();
+
+    } else {
+
+      alert(
+        data.message ||
+        "Failed to add property"
+      );
+
     }
-  };
+
+  } catch (error) {
+
+    console.log(error);
+
+    alert(
+      "Something went wrong"
+    );
+
+  }
+};
 
   return (
     <div className="edit-container">
@@ -187,6 +193,7 @@ function Addprop() {
   className="update-btn">
   Add Property
 </button>
+
         
       </form>
 

@@ -7,16 +7,14 @@ function useAuth() {
 
   useEffect(() => {
 
-    const loginStatus =
+    const status =
       localStorage.getItem(
         "isLoggedIn"
       );
 
-    if (loginStatus === "true") {
-
-      setIsLoggedIn(true);
-
-    }
+    setIsLoggedIn(
+      status === "true"
+    );
 
   }, []);
 

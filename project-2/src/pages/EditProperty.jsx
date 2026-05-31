@@ -131,13 +131,11 @@ function EditProperty() {
 
         if (response.ok) {
 
-          alert(
-            "Property updated successfully"
-          );
+  alert("Property updated successfully");
 
-          navigate("/");
+  window.location.href = "/";
 
-        }
+}
 
         else {
 

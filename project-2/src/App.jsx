@@ -1,21 +1,10 @@
-import React, {
-  useState,
-  useEffect
-} from "react";
-
-import {
-  BrowserRouter,
-  Routes,
-  Route
-} from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-
+import React, {useState,useEffect,useMemo,lazy,Suspense} from "react";
+import {BrowserRouter,Routes,Route,Link} from "react-router-dom";
 
 import Home from "./pages/Home";
 import Properties from "./pages/Properties";
 import About from "./pages/About";
 import Save from "./components/Save";
-import PropertyDetails from "./pages/PropertyDetails";
 
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -54,13 +43,22 @@ function App() {
     setSavedProperties] =
     useState([]);
 
-    const navigate = useNavigate();
 
   // Modal
 
   const [selectedProperty,
     setSelectedProperty] =
     useState(null);
+
+    const [showAddForm, setShowAddForm] =
+  useState(false);
+
+  const PropertyDetails = lazy(
+  () =>
+    import(
+      "./pages/PropertyDetails"
+    )
+);
 
     const {
 
@@ -230,58 +228,69 @@ function App() {
   // =========================
   
 
-  const filteredProperties =
-    properties.filter((property) => {
+const filteredProperties =
+  useMemo(() => {
 
-      return (
+    return properties.filter(
+      (property) => {
 
-        property.title
-          ?.toLowerCase()
-          .includes(
-            search.toLowerCase()
-          )
+        return (
 
-        &&
-
-        (
-
-          typeFilter === ""
-
-          ||
-
-          property.type
+          property.title
             ?.toLowerCase()
+            .includes(
+              search.toLowerCase()
+            )
 
-          ===
+          &&
 
-          typeFilter.toLowerCase()
+          (
+            typeFilter === ""
 
-        )
+            ||
 
-        &&
+            property.type
+              ?.toLowerCase()
 
-        (
+            ===
 
-          maxPrice === ""
-
-          ||
-
-          Number(
-
-            String(property.price)
-              .replace(/[^0-9]/g, "")
-
+            typeFilter.toLowerCase()
           )
 
-          <=
+          &&
 
-          Number(maxPrice)
+          (
+            maxPrice === ""
 
-        )
+            ||
 
-      );
+            Number(
+              String(property.price)
+                .replace(/[^0-9]/g, "")
+            )
 
-    });
+            <=
+
+            Number(maxPrice)
+          )
+
+        );
+
+      }
+
+    );
+
+  }, [
+
+    properties,
+
+    search,
+
+    typeFilter,
+
+    maxPrice
+
+  ]);
 
   return (
 
@@ -373,6 +382,7 @@ function App() {
               }
 
             >
+              
 
               <option value="">
                 All Types
@@ -405,34 +415,37 @@ function App() {
             </select>
 
             <input
-
               type="number"
-
               placeholder="Max Price"
-
               min={0}
-
               value={maxPrice}
-
               onChange={(e) =>
-
                 setMaxPrice(
                   e.target.value
                 )
-
               }
-
             />
 
-            <Button
-  to="/add-property"
-  className="add-btn"
->
-  Add Property
-</Button>
+            <button
+             className="add-btn"
+             onClick={() =>
+             setShowAddForm(!showAddForm)
+              } 
+             >
+             {showAddForm
+              ? "Close Form"
+             : "Add Property"}
+            </button>
 
              </div>
 
+{showAddForm && (
+  <Addprop
+    closeForm={() =>
+      setShowAddForm(false)
+    }
+  />
+)}
           <Routes>
 
             {/* HOME */}
@@ -525,8 +538,8 @@ function App() {
                       )}
 
                     </div>
-
                   </div>
+                  
 
                 )
 
@@ -537,14 +550,19 @@ function App() {
             {/* PROPERTY DETAILS */}
 
             <Route
-
-              path="/properties/:id"
-
-              element={
-                <PropertyDetails />
-              }
-
-            />
+  path="/properties/:id"
+  element={
+    <Suspense
+      fallback={
+        <h2>
+          Loading Property...
+        </h2>
+      }
+    >
+      <PropertyDetails />
+    </Suspense>
+  }
+/>
 
             {/* PROPERTIES */}
 
@@ -583,13 +601,6 @@ function App() {
               element={<Save />}
 
             />
-
-            {/* ADD PROPERTY */}
-
-            <Route
-  path="/add-property"
-  element={<Addprop />}
-/>
 
             <Route
     path="/edit-property/:id"

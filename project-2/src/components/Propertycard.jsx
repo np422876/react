@@ -1,8 +1,9 @@
-import React from "react";
+import React, {memo} from "react";
 import styles from "./Propertycard.module.css";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import deleteIcon from "../assets/delete.png";
+
 function Propertycard({
   property,
   handleSave,
@@ -168,4 +169,4 @@ const navigate = useNavigate();
 
 }
 
-export default Propertycard;
+export default memo(Propertycard);
