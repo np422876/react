@@ -339,6 +339,13 @@ const filteredProperties =
   path="/edit-property/:id"
   element={<EditProperty />}
 />
+
+<Route
+  path="*"
+  element={<h1>Page Not Found</h1>}
+/>
+
+
         </Routes>
 
       ) : (
@@ -488,54 +495,23 @@ const filteredProperties =
 
                     <Home />
 
-                    <div className="user">
+<h2 className="featured-title">
+  Featured Properties
+</h2>
 
-                      {filteredProperties.length === 0 ? (
+<div className="user">
+  {filteredProperties.slice(0, 3).map((property) => (
+    <Propertycard
+      key={property._id}
+      property={property}
+      handleSave={handleSave}
+      onCardClick={setSelectedProperty}
+      isSaved={savedProperties.some(
+        (item) => item._id === property._id
+      )}
+    />
+  ))}
 
-                        <div className="no-properties">
-
-                          <h2>
-                            No properties found
-                          </h2>
-
-                          <p>
-                            Try changing your filters
-                          </p>
-
-                        </div>
-
-                      ) : (
-
-                        filteredProperties.map(
-                          (property) => (
-
-                            <Propertycard
-
-                              key={property._id}
-
-                              property={property}
-
-                              handleSave={handleSave}
-
-                              onCardClick={
-                                setSelectedProperty
-                              }
-
-                              isSaved={savedProperties.some(
-
-                                (item) =>
-
-                                  item._id ===
-                                  property._id
-
-                              )}
-
-                            />
-
-                          )
-                        )
-
-                      )}
 
                     </div>
                   </div>
@@ -573,9 +549,8 @@ const filteredProperties =
               element={
 
                 <Properties
-                  handleSave={
-                    handleSave
-                  }
+                  handleSave={handleSave}
+                  savedProperties={savedProperties}
                 />
 
               }

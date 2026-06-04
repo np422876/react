@@ -1,6 +1,22 @@
-.home{
-    align-items: center;
-    align-content: center;
-    text-align: center;
+.home-hero {
+  text-align: center;
+  padding: 60px 20px;
 }
 
+.home-hero h1 {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.home-hero p {
+  font-size: 1.2rem;
+  color: #9f2929;
+  text-align: center;
+}
+
+.featured-title {
+  text-align: center;
+  align-items: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}

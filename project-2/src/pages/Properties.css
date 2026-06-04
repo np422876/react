@@ -1,7 +1,78 @@
-.properties{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    align-content: center;
+/* Properties.css */
+
+.property-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  justify-items: center;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .property-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .property-grid {
+    grid-template-columns: 1fr;
+    padding: 15px;
+  }
+}
+
+/* Skeleton Loader */
+.skeleton-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  padding: 20px;
+}
+
+.skeleton-card {
+  height: 400px;
+  width: 100%;
+  max-width: 350px;
+  border-radius: 12px;
+  background: #e5e5e5;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.6;
+  }
+}
+
+/* Error Box */
+.error-box {
+  text-align: center;
+  padding: 40px;
+}
+
+.error-box h2 {
+  margin-bottom: 10px;
+}
+
+/* No Properties */
+.no-properties {
+  text-align: center;
+  grid-column: 1 / -1;
+  padding: 50px;
+}
+
+.no-properties h2 {
+  margin-bottom: 10px;
 }

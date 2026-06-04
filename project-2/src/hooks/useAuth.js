@@ -4,6 +4,7 @@ function useAuth() {
 
   const [isLoggedIn, setIsLoggedIn] =
     useState(false);
+    console.log("isLoggedIn =", isLoggedIn);
 
   useEffect(() => {
 

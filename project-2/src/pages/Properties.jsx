@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Propertycard from "../components/Propertycard";
-
+import "./Properties.css";
 function Properties({
   savedProperties,
   handleSave
@@ -13,6 +13,7 @@ function Properties({
 
   const [error, setError] =
     useState("");
+    console.log("savedProperties:", savedProperties);
 
   // Fetch Properties
 
@@ -23,36 +24,14 @@ function Properties({
     setTimeout(() => {
 
       fetch(
-        "https://6a0417582afe8349b4b5d8e5.mockapi.io/api/properties"
+        "http://localhost:8000/api/properties"
       )
 
         .then((res) => res.json())
 
         .then((apiData) => {
-
-          // Local Added Properties
-
-          const localData =
-            JSON.parse(
-              localStorage.getItem("properties")
-            ) || [];
-
-          // Merge API + Local Properties
-
-          const mergedProperties = [
-  ...apiData,
-  ...localData.filter(
-    (localProperty) =>
-      !apiData.some(
-        (apiProperty) =>
-          apiProperty.id === localProperty.id
-      )
-  )
-];
-
-          setProperties(
-            mergedProperties
-          );
+          setProperties(apiData);
+        
 
           setLoading(false);
 
@@ -132,13 +111,11 @@ function Properties({
             properties.map((property) => (
 
               <Propertycard
-                key={property.id}
+                key={property._id}
                 property={property}
                 handleSave={handleSave}
                 
-                isSaved={savedProperties.some(
-  (p) => p.id === property.id
-)}
+                isSaved={savedProperties.some((p) => p._id === property._id)}
               />
 
             ))

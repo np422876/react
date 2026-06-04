@@ -31,13 +31,13 @@ function Navbar({children}) {
   className="logout-btn"
   onClick={() => {
 
-    localStorage.removeItem(
-      "isLoggedIn"
-    );
+  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("token");
+  localStorage.removeItem("userName");
 
-    window.location.href = "/";
+  window.location.href = "/";
 
-  }}
+}}
 >
 
   Logout
