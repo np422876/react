@@ -10,7 +10,7 @@ function Home({ properties, setProperties }) {
 
       <p>
         Browse apartments, villas, flats, and luxury
-        properties in one place.
+        properties in one place. Discover your perfect home today!
       </p>
     </div>
   );
