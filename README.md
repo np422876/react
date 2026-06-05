@@ -70,3 +70,9 @@ A full-stack Real Estate Management System built using React, Node.js, Express, 
    - MONGO_URI=mongodb+srv://Navya:navyapatel9979@real-estate.ho2wl7j.mongodb.net/?appName=Real-Estate
    - PORT=8000
    - JWT_SECRET=realestate
+     
+* Screenshots
+    - Home Page: <img width="3024" height="1814" alt="homepage" src="https://github.com/user-attachments/assets/79d44a2d-1b74-41ab-9c47-bd3cc30b2fd4" />
+    - Property Details: <img width="3024" height="1814" alt="propertydetails" src="https://github.com/user-attachments/assets/53f60278-fa42-4a7a-8e1f-4383fadc171c"/>
+    - Saved Properties: <img width="3024" height="1814" alt="saved properties" src="https://github.com/user-attachments/assets/5c2a3608-f5d1-4dfc-a38d-3e2f82f7fab5" />
+    - Edit Property: <img width="3024" height="1814" alt="edit property" src="https://github.com/user-attachments/assets/e6039f37-aa43-4387-a379-19cf5eba30ba" />
